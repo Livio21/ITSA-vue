@@ -1,8 +1,8 @@
 <template>
   <navBar></navBar>
-  <div class="flex min-h-screen">
-    <SideNav class=""></SideNav>
-    <router-view class="" />
+  <div class="flex min-h-screen ">
+    <SideNav class="flex-shrink"></SideNav>
+    <router-view class="flex-grow" />
   </div>
   <FooterComponent></FooterComponent>
 </template>

@@ -79,7 +79,7 @@ export default createStore({
     async logout({ commit }) {
       await signOut(auth);
       commit("CLEAR_USER");
-      router.push("/sign-in");
+      router.push("/log-in");
     },
 
     async register({ commit }, details) {

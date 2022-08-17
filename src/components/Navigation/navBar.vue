@@ -4,21 +4,12 @@
       <div class="">
         <nav class="grid grid-flow-col py-3 mx-auto text-white">
           <header class="flex items-center max-w-fit px-4">
-            <button
-              v-if="status()"
-              @click="SHOW_NAV"
-              class="focus:ring focus:ring-black cursor-pointer active:bg-slate-300 rounded-full hover:bg-slate-200 mr-5"
-            >
-              <span
-                v-if="!showNav"
-                class="material-symbols-outlined text-black p-3"
-              >
+            <button v-if="status()" @click="SHOW_NAV"
+              class="focus:ring focus:ring-black cursor-pointer active:bg-slate-300 rounded-full hover:bg-slate-200 mr-5">
+              <span v-if="!showNav" class="material-symbols-outlined text-black p-3">
                 menu
               </span>
-              <span
-                v-if="showNav"
-                class="material-symbols-outlined text-black p-3"
-              >
+              <span v-if="showNav" class="material-symbols-outlined text-black p-3">
                 menu_open
               </span>
             </button>
@@ -26,41 +17,25 @@
               <span class="material-symbols-outlined text-black pr-3">
                 school
               </span>
-              <span
-                class="font-bold text-black md:text-3xl cursor-pointer text-lg hidden sm:block"
-                @click="router.push('/')"
-                >ITSA</span
-              >
+              <span class="font-bold text-black md:text-3xl cursor-pointer text-lg hidden sm:block"
+                @click="router.push('/')">ITSA</span>
             </div>
           </header>
           <ul class="flex justify-end gap-5 font-bold list-none px-3">
-            <router-link
-              v-show="!status()"
+            <router-link v-show="!status()"
               class="rounded-full w-28 text-center bg-blue-600 hover:cursor-pointer hover:shadow-xl hover:bg-blue-500 active:bg-blue-700 focus:ring focus:ring-black p-3"
-              to="/sign-in"
-              >Sign In</router-link
-            >
+              to="/log-in">Log In</router-link>
             <div v-if="status()" class="flex items-center gap-3">
-              <div
-                class="flex items-center"
-                @click="router.push('/my-profile')"
-              >
-                <img
-                  :src="userPfp()"
-                  alt=""
-                  width="50"
-                  class="mx-3 cursor-pointer rounded-full ring hover:scale-105 hover:shadow-lg active:scale-100"
-                />
+              <div class="flex items-center" @click="router.push('/my-profile')">
+                <img :src="userPfp()" alt="" width="50"
+                  class="mx-3 cursor-pointer rounded-full ring hover:scale-105 hover:shadow-lg active:scale-100" />
                 <h1
-                  class="text-black hover:border-b-2 cursor-pointer hover:border-black hover:scale-105 active:scale-100 hidden sm:block"
-                >
+                  class="text-black hover:border-b-2 cursor-pointer hover:border-black hover:scale-105 active:scale-100 hidden sm:block">
                   {{ store.state.user.displayName }}
                 </h1>
               </div>
-              <button
-                @click="$store.dispatch('logout')"
-                class="flex items-center gap-3 rounded-full text-center bg-blue-600 hover:cursor-pointer hover:shadow-xl hover:bg-blue-500 active:bg-blue-700 focus:ring focus:ring-black p-3"
-              >
+              <button @click="$store.dispatch('logout')"
+                class="flex items-center gap-3 rounded-full text-center bg-blue-600 hover:cursor-pointer hover:shadow-xl hover:bg-blue-500 active:bg-blue-700 focus:ring focus:ring-black p-3">
                 <span class="material-symbols-outlined"> logout </span>
                 <h1 class="hidden sm:block">Sign Out</h1>
               </button>
@@ -113,7 +88,7 @@ export default {
         return "https://freesvg.org/img/abstract-user-flat-4.png";
       }
     };
-    onBeforeMount(() => {});
+    onBeforeMount(() => { });
     onMounted(() => {
       store.dispatch("fetchUser");
       status();
@@ -136,12 +111,15 @@ export default {
 
 <style lang="css" scoped>
 @import url("https://fonts.googleapis.com/css2?family=Sora&display=swap");
+
 nav {
   font-family: "Sora", sans-serif;
 }
+
 * {
   transition: all 150ms;
 }
+
 #navbar {
   transition: top 0.3s;
 }

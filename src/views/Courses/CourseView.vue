@@ -1,47 +1,47 @@
 <template>
   <div class="flex mx-auto p-10">
-    <header class="bg-slate-300 p-10 rounded-lg">
-      <img src="" class="courseImg" alt="" />
-      <h1>Course name</h1>
-    </header>
-    <div></div>
+    <div v-for="course in courses" :key="course.id">
+      <header class="bg-slate-300 p-10 rounded-lg">
+        <img src="" class="courseImg" alt="" />
+        <h1>{{ course.title }}</h1>
+        <h1>{{ course.grade }}</h1>
+      </header>
+    </div>
   </div>
 </template>
 
 <script>
 import { db } from "@/firebase";
-import { collection, getDocs } from "@firebase/firestore";
-import { onMounted } from "vue";
+import { collection, onSnapshot } from "@firebase/firestore";
+import { onMounted, ref } from "vue";
 export default {
   setup() {
-    const test = async () => {
-      try {
-        const res = await collection(db, "Courses");
-        console.log(res);
-      } catch (err) {
-        console.log("error");
-      }
-    };
-    const test2 = async () => {
-      try {
-        const res = await getDocs(collection(db, "Courses"));
-        res.forEach((doc) => {
-          console.log(`${doc.id} => ${doc.data()}`);
-        });
-        console.log(res);   
-      } catch (error) {
-        console.log("error");
-      }
-    };
+    const courses = ref([]);
+
+
 
     onMounted(() => {
-      test();
-      test2();
+
+      onSnapshot(collection(db, 'Courses'), (querySnapshot) => {
+        const arr = []
+        querySnapshot.forEach((doc) => {
+
+          const test = {
+            id: doc.id,
+            title: doc.data().title,
+            grade: doc.data().grade
+          }
+          arr.push(test)
+        })
+        courses.value = arr
+        console.log(courses.value);
+      })
     });
-    return { test, test2 };
+    return { courses };
   },
   methods: {},
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+</style>

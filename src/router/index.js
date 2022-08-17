@@ -24,13 +24,31 @@ const routes = [
     },
   },
   {
-    path: "/sign-in",
+    path: "/sign-up",
     name: "signin",
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Auth/SignInView.vue"),
+      import(/* webpackChunkName: "about" */ "../views/Auth/RegisterView.vue"),
+  },
+  {
+    path: "/log-in",
+    name: "login",
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Auth/LoginView.vue"),
+  },
+  {
+    path: "/forgot-password",
+    name: "Reset Pass",
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/Auth/ResetPass.vue"),
   },
   {
     path: "/test",
@@ -39,9 +57,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(
-        /* webpackChunkName: "about" */ "../views/Testing/TestingView.vue"
-      ),
+      import(/* webpackChunkName: "about" */ "../views/Auth/RegisterView.vue"),
     meta: {
       requiresAuth: true,
     },
@@ -65,7 +81,9 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Courses/CreateCourseView.vue"),
+      import(
+        /* webpackChunkName: "about" */ "../views/Courses/CreateCourseView.vue"
+      ),
     meta: {
       requiresAuth: true,
     },
@@ -101,7 +119,7 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  if (to.path === "/sign-in" && auth.currentUser) {
+  if (to.path === "/log-in" && auth.currentUser) {
     next("/");
     return;
   }
@@ -109,7 +127,7 @@ router.beforeEach((to, from, next) => {
     to.matched.some((record) => record.meta.requiresAuth) &&
     !auth.currentUser
   ) {
-    next("/sign-in");
+    next("/log-in");
     return;
   }
   next();
