@@ -35,14 +35,14 @@
                                 <button
                                     class="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700 hover:scale-105 hover:shadow-md active:bg-blue-500 active:scale-100"
                                     type="submit">
-                                    Sign In
+                                    Log In
                                 </button>
                             </div>
                             <hr class="mb-6 border-t" />
                             <div class="text-center">
                                 <router-link
                                     class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
-                                    to="/sign-up">
+                                    to="/signup">
                                     Create an Account!
                                 </router-link>
                             </div>

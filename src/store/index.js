@@ -12,6 +12,7 @@ import {
   updateProfile,
   updateEmail,
 } from "firebase/auth";
+// import { onSnapshot } from "firebase/firestore";
 // import { addDoc } from "firebase/firestore";
 
 export default createStore({
@@ -31,6 +32,9 @@ export default createStore({
     SHOW_NAV(state) {
       state.showNav = !state.showNav;
     },
+    CURR_COURSE(state,payload){
+      state.course = payload;
+    }
   },
   actions: {
     async updateUser({ commit }, details) {
@@ -58,6 +62,19 @@ export default createStore({
       commit("SET_USER", auth.currentUser);
     },
 
+    // async getCourse({commit}){
+    //   onSnapshot(collection(db, "Courses"), (querySnapshot) => {
+    //     querySnapshot.forEach((doc) => {
+    //       const test = {
+    //         id: doc.id,
+    //         title: doc.data().title,
+    //       };
+
+    //       courseTitles.value.push(test);
+    //     });
+    //     console.log(courseTitles.value);
+    //   });
+    // },
     async login({ commit }, details) {
       const { email, password } = details;
       try {
@@ -79,7 +96,7 @@ export default createStore({
     async logout({ commit }) {
       await signOut(auth);
       commit("CLEAR_USER");
-      router.push("/log-in");
+      router.push("/login");
     },
 
     async register({ commit }, details) {
@@ -127,10 +144,7 @@ export default createStore({
           commit("CLEAR_USER");
         } else {
           commit("SET_USER", user);
-          if (
-            router.isReady() &&
-            router.currentRoute.value.path === "/sign-in"
-          ) {
+          if (router.isReady() && router.currentRoute.value.path === "/login") {
             router.push("/");
           }
         }

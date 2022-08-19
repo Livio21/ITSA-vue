@@ -1,8 +1,10 @@
 <template>
   <navBar></navBar>
-  <div class="flex min-h-screen ">
+  <div class="flex min-h-screen">
     <SideNav class="flex-shrink"></SideNav>
-    <router-view class="flex-grow" />
+    <div class="p-10 flex-grow">
+      <router-view class="" :key="$route.path" />
+    </div>
   </div>
   <FooterComponent></FooterComponent>
 </template>
@@ -11,7 +13,7 @@ import { onBeforeMount } from "vue";
 import navBar from "@/components/Navigation/navBar.vue";
 
 import FooterComponent from "@/components/footerComponent.vue";
-import store from "./store";
+import { useStore } from "vuex";
 import SideNav from "./components/Navigation/sideNav.vue";
 
 export default {
@@ -22,6 +24,7 @@ export default {
     SideNav,
   },
   setup() {
+    const store = useStore();
     onBeforeMount(() => {
       store.dispatch("fetchUser");
     });
@@ -30,6 +33,7 @@ export default {
 </script>
 <style>
 @import url("https://fonts.googleapis.com/css2?family=Poppins&display=swap");
+
 #app {
   font-family: "Poppins", sans-serif;
 }

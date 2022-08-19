@@ -75,7 +75,7 @@
                             <div class="mb-6  text-center">
                                 <router-link
                                     class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
-                                    to="/log-in">
+                                    to="/login">
                                     Already have an account? Login!
                                 </router-link>
                             </div>

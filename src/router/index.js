@@ -14,9 +14,6 @@ const routes = [
   {
     path: "/about",
     name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
     meta: {
@@ -24,78 +21,52 @@ const routes = [
     },
   },
   {
-    path: "/sign-up",
-    name: "signin",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Auth/RegisterView.vue"),
-  },
-  {
-    path: "/log-in",
-    name: "login",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Auth/LoginView.vue"),
-  },
-  {
-    path: "/forgot-password",
-    name: "Reset Pass",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Auth/ResetPass.vue"),
-  },
-  {
     path: "/test",
     name: "test",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Auth/RegisterView.vue"),
+    component: () => import("../views/Testing/TestingView.vue"),
     meta: {
       requiresAuth: true,
     },
   },
   {
-    path: "/Course",
-    name: "Course",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/Courses/CourseView.vue"),
+    path: "/courses/:courseName",
+    name: "courses",
+    component: () => import("../views/Courses/CourseView.vue"),
+    props: true,
     meta: {
       requiresAuth: true,
     },
   },
+  {
+    path: "/quizzes",
+    name: "quiz",
+    component: () => import("../views/Quizz/CreateQuizzes.vue"),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  // {
+  //   path: "/Courses/:courseName/Tools/:toolName",
+  //   name: "courses",
+  //   component: () => import("../views/Courses/CourseView.vue"),
+  //   props: true,
+  //   meta: {
+  //     requiresAuth: true,
+  //   },
+  // },
   {
     path: "/create-course",
     name: "createCourse",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(
-        /* webpackChunkName: "about" */ "../views/Courses/CreateCourseView.vue"
-      ),
+    component: () => import("../views/Courses/CreateCourseView.vue"),
     meta: {
       requiresAuth: true,
     },
   },
+
   {
     path: "/my-profile",
     name: "Profile",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/User/ProfileView.vue"),
+    component: () => import("../views/User/ProfileView.vue"),
     meta: {
       requiresAuth: true,
     },
@@ -103,14 +74,25 @@ const routes = [
   {
     path: "/edit-profile",
     name: "EditProfile",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/User/EditProfile.vue"),
+    component: () => import("../views/User/EditProfile.vue"),
     meta: {
       requiresAuth: true,
     },
+  },
+  {
+    path: "/register",
+    name: "register",
+    component: () => import("../views/Auth/RegisterView.vue"),
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("../views/Auth/LoginView.vue"),
+  },
+  {
+    path: "/forgot-password",
+    name: "Reset Pass",
+    component: () => import("../views/Auth/ResetPass.vue"),
   },
 ];
 
@@ -119,7 +101,7 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-  if (to.path === "/log-in" && auth.currentUser) {
+  if (to.path === "/login" && auth.currentUser) {
     next("/");
     return;
   }
@@ -127,7 +109,7 @@ router.beforeEach((to, from, next) => {
     to.matched.some((record) => record.meta.requiresAuth) &&
     !auth.currentUser
   ) {
-    next("/log-in");
+    next("/login");
     return;
   }
   next();

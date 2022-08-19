@@ -24,7 +24,7 @@
           <ul class="flex justify-end gap-5 font-bold list-none px-3">
             <router-link v-show="!status()"
               class="rounded-full w-28 text-center bg-blue-600 hover:cursor-pointer hover:shadow-xl hover:bg-blue-500 active:bg-blue-700 focus:ring focus:ring-black p-3"
-              to="/log-in">Log In</router-link>
+              to="/login">Log In</router-link>
             <div v-if="status()" class="flex items-center gap-3">
               <div class="flex items-center" @click="router.push('/my-profile')">
                 <img :src="userPfp()" alt="" width="50"
