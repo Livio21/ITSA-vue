@@ -27,8 +27,9 @@
               to="/login">Log In</router-link>
             <div v-if="status()" class="flex items-center gap-3">
               <div class="flex items-center" @click="router.push('/my-profile')">
-                <img :src="userPfp()" alt="" width="50"
-                  class="mx-3 cursor-pointer rounded-full ring hover:scale-105 hover:shadow-lg active:scale-100" />
+                <div class="w-[50px] h-[50px] mx-3 cursor-pointer rounded-full ring hover:scale-105 hover:shadow-lg active:scale-100 overflow-hidden">
+                  <img :src="store.state.user.photoURL" alt="" width="50" height="50" />
+                </div>
                 <h1
                   class="text-black hover:border-b-2 cursor-pointer hover:border-black hover:scale-105 active:scale-100 hidden sm:block">
                   {{ store.state.user.displayName }}
@@ -80,14 +81,7 @@ export default {
         return false;
       }
     };
-    const userPfp = () => {
-      if (store.state.user.photoURL) {
-        // console.log(store.state.user.photoURL);
-        return store.state.user.photoURL;
-      } else {
-        return "https://freesvg.org/img/abstract-user-flat-4.png";
-      }
-    };
+
     onBeforeMount(() => { });
     onMounted(() => {
       store.dispatch("fetchUser");
@@ -95,7 +89,7 @@ export default {
 
       // console.log(status(), store.state.user);
     });
-    return { store, status, router, userPfp, userData };
+    return { store, status, router, userData };
   },
   methods: {
     toggleLogIn() {

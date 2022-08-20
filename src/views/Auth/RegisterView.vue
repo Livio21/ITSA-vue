@@ -1,20 +1,20 @@
 <template>
     <div>
         <div class="container mx-auto">
-            <div class="flex justify-center px-6 my-12">
+            <div class="flex justify-center my-12">
                 <div class="w-full xl:w-3/4 lg:w-11/12 flex ">
                     <div class="w-full h-auto bg-gray-400 hidden lg:block lg:w-5/12 bg-cover rounded-l-lg "
                         style="background-image: url('https://source.unsplash.com/DR7JSeKdKwc/')"></div>
-                    <div class="w-full lg:w-7/12  p-5 rounded-lg lg:rounded-l-none bg-slate-100">
+                    <div class="w-full lg:w-7/12  rounded-lg lg:rounded-l-none ring ring-slate-100">
                         <h3 class="pt-4 text-2xl text-center">Create an Account!</h3>
-                        <form class="px-8 pt-6 pb-0  rounded  " @submit.prevent="register">
+                        <form class=" px-8 pt-6 pb-0  rounded  " @submit.prevent="register">
                             <div class="mb-4 md:flex md:justify-between">
                                 <div class="mb-4 md:mr-2 md:mb-0">
                                     <label class="block mb-2 text-sm font-bold text-gray-700" for="firstName">
                                         First Name
                                     </label>
                                     <input
-                                        class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                                        class="w-full px-3 py-3 text-sm leading-tight text-gray-700 border rounded-full shadow appearance-none focus:outline-none focus:shadow-outline"
                                         id="firstName" type="text" placeholder="First Name"
                                         v-model="registerPlaceholder.displayName.firstName" />
                                 </div>
@@ -23,7 +23,7 @@
                                         Last Name
                                     </label>
                                     <input
-                                        class="w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                                        class="w-full px-3 py-3 text-sm leading-tight text-gray-700 border rounded-full shadow appearance-none focus:outline-none focus:shadow-outline"
                                         id="lastName" type="text" placeholder="Last Name"
                                         v-model="registerPlaceholder.displayName.lastName" />
                                 </div>
@@ -33,8 +33,9 @@
                                     Email
                                 </label>
                                 <input
-                                    class="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                                    id="email" type="email" placeholder="Email" v-model="registerPlaceholder.email" required/>
+                                    class="w-full px-3 py-3 mb-3 text-sm leading-tight text-gray-700 border rounded-full shadow appearance-none focus:outline-none focus:shadow-outline"
+                                    id="email" type="email" placeholder="Email" v-model="registerPlaceholder.email"
+                                    required />
                             </div>
                             <div class="mb-4 md:flex md:justify-between">
                                 <div class="mb-4 md:mr-2 md:mb-0">
@@ -42,7 +43,7 @@
                                         Password
                                     </label>
                                     <input
-                                        class="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border  rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                                        class="w-full px-3 py-3 mb-3 text-sm leading-tight text-gray-700 border  rounded-full shadow appearance-none focus:outline-none focus:shadow-outline"
                                         :class="{}" id="password" type="password" placeholder="******************"
                                         v-model="registerPlaceholder.password.password" required />
 
@@ -52,14 +53,15 @@
                                         Confirm Password
                                     </label>
                                     <input
-                                        class="w-full px-3 py-2 mb-3 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                                        class="w-full px-3 py-3 mb-3 text-sm leading-tight text-gray-700 border rounded-full shadow appearance-none focus:outline-none focus:shadow-outline "
                                         id="c_password" type="password" placeholder="******************"
+                                        :class="{ 'ring ring-red-500': test }"
                                         v-model="registerPlaceholder.password.confirm" />
                                 </div>
                             </div>
                             <div class="mb-6 text-center">
                                 <button
-                                    class="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded-full hover:bg-blue-700  hover:scale-105 hover:shadow-md active:bg-blue-500 active:scale-100"
+                                    class="w-[200px] h-[50px] px-4 py-2 font-bold text-white bg-green-500 rounded-full hover:bg-green-700  hover:scale-105 hover:shadow-md active:bg-green-500 active:scale-100"
                                     type="submit">
                                     Register Account
                                 </button>
@@ -106,6 +108,7 @@ export default {
             password: { password: '', confirm: '' }
         }
 
+        const test = ref(false)
         const register_form = ref({})
         const store = useStore();
         const register = () => {
@@ -114,11 +117,12 @@ export default {
                 register_form.value.displayName = registerPlaceholder.displayName.firstName + ' ' + registerPlaceholder.displayName.lastName
                 register_form.value.email = registerPlaceholder.email
                 register_form.value.password = registerPlaceholder.password.password
+                store.dispatch("register", register_form.value);
 
             } else {
+                test.value = true;
                 alert("Passwords don't match")
             }
-            store.dispatch("register", register_form.value);
             console.log(register_form.value, registerPlaceholder);
         }
 
@@ -135,7 +139,7 @@ export default {
             signInWithGoogle,
             userData,
             registerPlaceholder,
-
+            test
         };
     },
 

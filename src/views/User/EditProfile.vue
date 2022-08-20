@@ -1,98 +1,182 @@
 <template>
   <div>
+    <form action="" class="mx-auto flex flex-col max-w-fit gap-10  bg-slate-200 p-10 rounded-2xl shadow-lg"
+      @submit="updateUser">
+      <div class="max-w-fit self-center">
 
-    <div
-      class="flex flex-col max-w-fit p-10 my-10 mx-auto  justify-center items-center gap-3 bg-slate-200 rounded-lg shadow-lg">
-      <img :src="userPfp()" width="100" alt="" class="rounded-full ring" />
-      <h1>Name: {{ userData.displayName }}</h1>
-      <h1>Email: {{ userData.email }}</h1>
-      <h1>Provider: {{ userData.providerId }}</h1>
-      <h1 class="">
-        Unique ID:
-        <span @click="clipboardF()" id="uid"
-          class="italic hover:text-gray-900 rounded-sm transition-all bg-black hover:bg-inherit p-1 cursor-pointer">{{
-              userData.uid
-          }}</span>
-        <span @click="clipboardF()" class="material-symbols-outlined p-1">
-          content_copy
-        </span>
-      </h1>
-      <form action="" @submit="updateUser(), updateEmail()"
-        class="editForm flex flex-col gap-3 bg-slate-300 p-10 rounded-lg">
-        <label for="username">Full Name</label>
-        <input type="text" v-model="userDetails.displayName" :placeholder="userData.displayName" name="username" />
-        <label for="email">Email</label>
-
-        <input type="email" v-model="userDetails.email" :placeholder="userData.email" name="email" />
-        <label for="pfp">Profile Picture</label>
-
-        <input type="file" v-on:change="handleFileUpload()" accept="image/" />
-
+        <FileDrop id="dropZone" @drop.prevent="drop" @change="selectedFile" :pfpUrl="pfpUrl" :editable="edit" />
+      </div>
+      <div class="flex gap-3 ">
+        <div class=" w-[350px] flex justify-between items-center">
+          <label for="firstname">First Name: </label>
+          <input type="text" name="firstname" :placeholder="userName[0]"
+            class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!edit"
+            v-model="fullName.firstName">
+        </div>
+        <div class=" w-[350px] flex justify-between items-center">
+          <label for="lastname">Last Name: </label>
+          <input type="text" name="lastname" :placeholder="userName[1]"
+            class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!edit" v-model="fullName.lastName">
+        </div>
+      </div>
+      <div class=" w-[350px] flex justify-between items-center">
+        <label for="email" class="">Email: </label>
+        <input type="email" name="email" :placeholder="userData.email"
+          class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
+          v-model="userDetails.email" required>
+      </div>
+      <div class="flex  gap-3">
+        <div class="w-[350px] flex justify-between items-center">
+          <label for="password">Password: </label>
+          <input type="password" name="password" placeholder="*********"
+            class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
+            v-model="cpassword[0]" required>
+        </div>
+        <div class=" w-[350px] flex justify-between items-center" v-if="edit">
+          <label for="cpassword">Confirm: </label>
+          <input type="password" name="cpassword" placeholder="*********"
+            class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
+            v-model="cpassword[1]" required>
+        </div>
+      </div>
+      <div class="flex gap-5 justify-end">
+        <div v-if="edit" class="inline p-3">
+          <label for="default-toggle" class="inline-flex relative items-center cursor-pointer">
+            <input type="checkbox" value="" id="default-toggle" class="sr-only peer" v-model="updateEmailandPass">
+            <div
+              class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
+            </div>
+            <span class="ml-3  font-medium text-black ">Update Email and Password?</span>
+          </label>
+        </div>
         <button type="submit"
-          class="bg-green-500 w-48 mx-auto rounded-full text-white text-xl p-2 hover:shadow-md hover:scale-105 hover:transition-all">
-          Save
+          class="w-[100px] h-[50px] bg-green-500 rounded-full text-white font-semibold  hover:bg-green-400 active:bg-green-600 active:scale-95"
+          :class="{' bg-gray-500': !isUploaded}" v-if="edit" :disabled="!isUploaded">
+          <span v-if="!isUploaded" class="material-symbols-outlined animate-spin">
+            hourglass_top
+          </span>
+          <span v-if="isUploaded">Save</span>
+
         </button>
-      </form>
-    </div>
+        <button type="button"
+          class="w-[100px] h-[50px] bg-red-500 rounded-full text-white font-semibold hover:bg-red-400 active:bg-red-600 active:scale-95"
+          @click="toggleEdit">Edit</button>
+      </div>
+    </form>
   </div>
 </template>
 
 <script>
 import { onMounted, ref } from "vue";
-import { uploadBytes } from "firebase/storage";
+import { uploadBytes, getDownloadURL } from "firebase/storage";
 import { profilePicture } from "@/firebase";
 
 import { useStore } from "vuex";
+import FileDrop from "@/components/fileDrop.vue";
 export default {
   setup() {
     const store = useStore();
     const userData = store.state.user;
+    const fullName = ref({})
+
     const userDetails = ref({});
-    const file = ref(null);
+    const userName = userData.displayName.split(' ')
+    const edit = ref(false)
+    const updateEmailandPass = ref(false)
+    const isUploaded = ref(true)
+
+    const pfpUrl = ref('')
+    const cpassword = ref([])
+
+    const toggleEdit = () => {
+      edit.value = !edit.value
+    }
+    let dropzoneFile = ref({})
+    const drop = (e) => {
+      dropzoneFile.value = e.dataTransfer.files[0]
+      handleFileUpload()
+    }
+    const selectedFile = () => {
+      dropzoneFile.value = document.querySelector(".dropzoneFile").files[0]
+      handleFileUpload()
+    }
 
     const handleFileUpload = async () => {
-      await uploadBytes(profilePicture(file.value.name), file).then(() => {
-        console.log("Uploaded a blob or file!");
-      });
+      if (dropzoneFile.value) {
+        isUploaded.value = false
+        await uploadBytes(profilePicture(dropzoneFile.value.name), dropzoneFile.value).then(() => {
+          getDownloadURL(profilePicture(dropzoneFile.value.name)).then((url) => {
+            userDetails.value.photoURL = url
+            pfpUrl.value = url
+            isUploaded.value = true
+          }).catch((err) => {
+            console.log(err.message, 'error getting the img url');
+          })
+          console.log("Uploaded a file!");
+          console.log(dropzoneFile.value.name);
+        })
+      }
     };
-
     const updateUser = () => {
-      store.dispatch("updateUser", userDetails.value);
-    };
-    const updateEmail = () => {
-      store.dispatch("updateUserEmail", userDetails.value);
+      if (userDetails.value) {
+        if (updateEmailandPass.value == true) {
+          if (cpassword.value[0] == cpassword.value[1]) {
+            cpassword.value[0] = userDetails.value.password
+            console.log(cpassword.value);
+            store.dispatch("updateUserEmail", userDetails.value);
+            store.dispatch("updatePass", userDetails.value);
+          } else {
+            alert("Passwords don't match!")
+          }
+        } else {
+          if (fullName.value) {
+            userDetails.value.displayName = fullName.value.firstName + ' ' + fullName.value.lastName
+            if (userDetails.value.photoURL) {
+              console.log(userDetails.value);
+              store.dispatch("updateUser", userDetails.value);
+            } else {
+              userDetails.value.photoURL = userData.photoURL
+              console.log(userDetails.value);
+              store.dispatch("updateUser", userDetails.value);
+            }
+          } else {
+            userDetails.value.displayName = userData.displayName;
+            store.dispatch("updateUser", userDetails.value);
+          }
+        }
+      }
+      // store.dispatch("updateUser", userDetails.value);
+      // store.dispatch("updateUserEmail", userDetails.value);
+      // store.dispatch("updatePass", userDetails.value);
     };
     const clipboardF = () => {
       const uid = userData.uid;
-
       navigator.clipboard.writeText(uid);
-
       alert("Copied succesfully!");
     };
-
-    const userPfp = () => {
-      if (userData.photoURL) {
-        // console.log(user.photoURL);
-        return userData.photoURL;
-      } else {
-        return "https://freesvg.org/img/abstract-user-flat-4.png";
-      }
-    };
-
-    onMounted(() => { });
+    onMounted(() => { pfpUrl.value = userData.photoURL });
     return {
       store,
       userData,
       userDetails,
       clipboardF,
-      userPfp,
       updateUser,
-      updateEmail,
       handleFileUpload,
-      file,
+      selectedFile,
+      dropzoneFile,
+      drop,
+      userName,
+      edit,
+      toggleEdit,
+      pfpUrl,
+      fullName,
+      cpassword,
+      isUploaded,
+      updateEmailandPass
     };
   },
   methods: {},
+  components: { FileDrop }
 };
 </script>
 

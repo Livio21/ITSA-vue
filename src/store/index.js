@@ -11,6 +11,7 @@ import {
   GoogleAuthProvider,
   updateProfile,
   updateEmail,
+  updatePassword,
 } from "firebase/auth";
 // import { onSnapshot } from "firebase/firestore";
 // import { addDoc } from "firebase/firestore";
@@ -32,34 +33,52 @@ export default createStore({
     SHOW_NAV(state) {
       state.showNav = !state.showNav;
     },
-    CURR_COURSE(state,payload){
+    CURR_COURSE(state, payload) {
       state.course = payload;
-    }
+    },
   },
   actions: {
     async updateUser({ commit }, details) {
       const { displayName, photoURL } = details;
-      try {
-        await updateProfile(auth.currentUser, {
-          displayName: displayName,
 
-          photoURL: photoURL,
+      await updateProfile(auth.currentUser, {
+        displayName,
+        photoURL,
+      })
+        .then(() => {
+          console.log("Profile updated");
+          alert("Success");
+          commit("SET_USER", auth.currentUser);
+          router.push("/");
+        })
+        .catch((err) => {
+          console.log(err.message, "error");
         });
-      } catch (err) {
-        console.log("error");
-        return;
-      }
-      commit("SET_USER", auth.currentUser);
     },
     async updateUserEmail({ commit }, details) {
       const { email } = details;
-      try {
-        await updateEmail(auth.currentUser, email);
-      } catch (err) {
-        console.log("error");
-        return;
-      }
-      commit("SET_USER", auth.currentUser);
+
+      await updateEmail(auth.currentUser, email)
+        .then(() => {
+          console.log("email updated");
+          commit("SET_USER", auth.currentUser);
+        })
+        .catch((err) => {
+          console.log(err.message, "error");
+        });
+    },
+    async updatePass({ commit }, details) {
+      const { password } = details;
+      await updatePassword(auth.currentUser, password)
+        .then(() => {
+          console.log("password updated");
+          commit("SET_USER", auth.currentUser);
+        })
+        .catch((err) => {
+          console.log(err.message, "error");
+        });
+      commit("CLEAR_USER");
+      router.push("/login");
     },
 
     // async getCourse({commit}){
@@ -105,6 +124,7 @@ export default createStore({
         await createUserWithEmailAndPassword(auth, email, password);
         updateProfile(auth.currentUser, {
           displayName: displayName,
+          photoURL: "https://freesvg.org/img/abstract-user-flat-4.png",
         });
       } catch (error) {
         switch (error.code) {

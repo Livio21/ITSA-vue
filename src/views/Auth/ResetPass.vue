@@ -13,27 +13,23 @@
                                 link to reset your password!
                             </p>
                         </div>
-                        <div class="px-8 pt-6 pb-8 mb-4  rounded">
-                            <form @submit="sendResetLink">
-
-                                <label class="block mb-2 text-sm font-bold text-gray-700" for="email">
-                                    Email
-                                </label>
-                                <input
-                                    class="mb-4 w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
-                                    type="email" placeholder="Enter Email Address..." v-model="userEmail" />
+                        <div class="flex flex-col px-8 pt-6 pb-8 mb-4  rounded">
+                            <label class="block mb-2 text-sm font-bold text-gray-700" for="email">
+                                Email
+                            </label>
+                            <input
+                                class="mb-4 w-full px-3 py-2 text-sm leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                                type="email" placeholder="Enter Email Address..." v-model="userEmail" />
 
 
-                                <button
-                                    class=" mb-6 text-center w-full px-4 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-700 focus:outline-none focus:shadow-outline"
-                                    type="submit">Submit</button>
-
-                            </form>
+                            <button
+                                class="self-center w-[200px] h-[50px] px-4 mb-3 py-2 font-bold text-white bg-red-500 rounded-full hover:bg-red-700  hover:scale-105 hover:shadow-md active:bg-red-500 active:scale-100"
+                                type="submit" @click="sendResetLink()">Submit</button>
                             <hr class="mb-6 border-t" />
                             <div class="text-center">
                                 <router-link
                                     class="inline-block text-sm text-blue-500 align-baseline hover:text-blue-800"
-                                    to="/signup">
+                                    to="/register">
                                     Create an Account!
                                 </router-link>
                             </div>
@@ -54,8 +50,8 @@
 
 <script>
 import { ref } from 'vue';
-// import { sendPasswordResetEmail } from '@firebase/auth';
-// import { auth } from '@/firebase'
+import { sendPasswordResetEmail } from '@firebase/auth';
+import { auth } from '@/firebase'
 export default {
 
     setup() {
@@ -63,20 +59,14 @@ export default {
         console.log(userEmail.value);
 
 
-        const sendResetLink = () => {
+        const sendResetLink = async () => {
 
-            // sendPasswordResetEmail(auth, userEmail)
-            //     .then(() => {
-            //         // Password reset email sent!
-            //         // ..
-            //     })
-            //     .catch((error) => {
-            //         console.log(error.message);
-            //         // ..
-            //     });
-
+            await sendPasswordResetEmail(auth, userEmail.value).then(
+                alert('Reset email send successfully ')
+            )
+            userEmail.value = ''
         }
-        return { sendResetLink }
+        return { sendResetLink, userEmail }
     }
 }
 
