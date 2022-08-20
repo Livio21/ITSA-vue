@@ -1,8 +1,8 @@
 <template>
   <navBar></navBar>
-  <div class="flex min-h-screen">
+  <div class="flex min-h-screen overflow-hidden">
     <SideNav class="flex-shrink"></SideNav>
-    <div class="p-10 flex-grow">
+    <div class="py-5 sm:p-10 flex-grow">
       <router-view class="" :key="$route.path" />
     </div>
   </div>

@@ -1,45 +1,45 @@
 <template>
   <div>
-    <form action="" class="mx-auto flex flex-col max-w-fit gap-10  bg-slate-200 p-10 rounded-2xl shadow-lg"
+    <form action="" class="mx-auto flex flex-col max-w-fit gap-10  bg-slate-200 p-10 sm:rounded-2xl shadow-lg"
       @submit="updateUser">
       <div class="max-w-fit self-center">
 
         <FileDrop id="dropZone" @drop.prevent="drop" @change="selectedFile" :pfpUrl="pfpUrl" :editable="edit" />
       </div>
-      <div class="flex gap-3 ">
-        <div class=" w-[350px] flex justify-between items-center">
+      <div class="flex flex-col md:flex-row gap-3 ">
+        <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center">
           <label for="firstname">First Name: </label>
           <input type="text" name="firstname" :placeholder="userName[0]"
             class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!edit"
             v-model="fullName.firstName">
         </div>
-        <div class=" w-[350px] flex justify-between items-center">
+        <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center">
           <label for="lastname">Last Name: </label>
           <input type="text" name="lastname" :placeholder="userName[1]"
             class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!edit" v-model="fullName.lastName">
         </div>
       </div>
-      <div class=" w-[350px] flex justify-between items-center">
+      <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center">
         <label for="email" class="">Email: </label>
         <input type="email" name="email" :placeholder="userData.email"
           class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
           v-model="userDetails.email" required>
       </div>
-      <div class="flex  gap-3">
-        <div class="w-[350px] flex justify-between items-center">
+      <div class="flex  flex-col md:flex-row gap-3">
+        <div class="w-[350px] flex flex-col md:flex-row justify-between items-center">
           <label for="password">Password: </label>
           <input type="password" name="password" placeholder="*********"
             class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
             v-model="cpassword[0]" required>
         </div>
-        <div class=" w-[350px] flex justify-between items-center" v-if="edit">
+        <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center" v-if="edit">
           <label for="cpassword">Confirm: </label>
           <input type="password" name="cpassword" placeholder="*********"
             class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
             v-model="cpassword[1]" required>
         </div>
       </div>
-      <div class="flex gap-5 justify-end">
+      <div class="flex flex-col md:flex-row  gap-5 justify-center md:justify-end">
         <div v-if="edit" class="inline p-3">
           <label for="default-toggle" class="inline-flex relative items-center cursor-pointer">
             <input type="checkbox" value="" id="default-toggle" class="sr-only peer" v-model="updateEmailandPass">
@@ -51,7 +51,7 @@
         </div>
         <button type="submit"
           class="w-[100px] h-[50px] bg-green-500 rounded-full text-white font-semibold  hover:bg-green-400 active:bg-green-600 active:scale-95"
-          :class="{' bg-gray-500': !isUploaded}" v-if="edit" :disabled="!isUploaded">
+          :class="{ ' bg-gray-500': !isUploaded }" v-if="edit" :disabled="!isUploaded">
           <span v-if="!isUploaded" class="material-symbols-outlined animate-spin">
             hourglass_top
           </span>
