@@ -52,11 +52,18 @@
                             </router-link>
                         </div>
                     </form>
-                    <div
-                        class="flex mx-auto mb-3 gap-2 bg-white max-w-fit p-3 rounded ring ring-gray-200 divide-x-2 cursor-pointer hover:bg-gray-50 hover:scale-105 transition-all">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/800px-Google_%22G%22_Logo.svg.png"
-                            alt="" srcset="" width="30" class="">
-                        <button @click="signInWithGoogle" class="pl-2 font-semibold"> Sign In with Google</button>
+
+                    <div class=" p-3 text-center">
+                        <button @click="signInWithGoogle" class="pl-2 font-semibold flex mx-auto mb-3 gap-2 max-w-fit p-3 rounded ring
+                                 ring-gray-200 divide-x-2 hover:bg-gray-50 hover:scale-105 transition-all
+                                 ">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/800px-Google_%22G%22_Logo.svg.png"
+                                alt="" srcset="" width="30" class="">
+                            <span class="p-2">
+                                Sign In with
+                                Google
+                            </span>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -73,6 +80,7 @@ export default {
     setup() {
         const login_form = ref({});
 
+
         const store = useStore();
         const login = () => {
             store.dispatch("login", login_form.value);
@@ -88,6 +96,7 @@ export default {
             login_form,
             login,
             signInWithGoogle,
+
         };
     },
 

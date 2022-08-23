@@ -28,14 +28,44 @@
                                         v-model="registerPlaceholder.displayName.lastName" />
                                 </div>
                             </div>
-                            <div class="mb-4">
-                                <label class="block mb-2 text-sm font-bold text-gray-700" for="email">
-                                    Email
-                                </label>
-                                <input
-                                    class="w-full px-3 py-3 mb-3 text-sm leading-tight text-gray-700 border rounded-full shadow appearance-none focus:outline-none focus:shadow-outline"
-                                    id="email" type="email" placeholder="Email" v-model="registerPlaceholder.email"
-                                    required />
+                            <div class="mb-4 flex flex-col md:flex-row md:gap-10">
+                                <div class=" basis-1/2 ">
+                                    <label class="block mb-2 text-sm font-bold text-gray-700" for="email">
+                                        Email
+                                    </label>
+                                    <input
+                                        class="w-full px-3 py-3 mb-3 text-sm leading-tight text-gray-700 border rounded-full shadow appearance-none focus:outline-none focus:shadow-outline"
+                                        id="email" type="email" placeholder="Email" v-model="registerPlaceholder.email"
+                                        required />
+                                </div>
+                                <label for="roles" class="text-sm font-bold">Roles:</label>
+                                <div class=" md:flex self-center basis-1/2" id="roles">
+                                    <ul
+                                        class="items-center text-center w-full h-1/2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 sm:flex ">
+                                        <li
+                                            class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r hover:bg-gray-100 ">
+                                            <div class="flex items-center pl-3">
+                                                <input id="horizontal-list-radio-license" type="radio" v-model="role"
+                                                    :value="'Student'" name="list-radio"
+                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2  "
+                                                    required>
+                                                <label for="horizontal-list-radio-license"
+                                                    class="py-3 ml-2 w-full text-sm font-medium text-gray-900 cursor-pointer ">Student</label>
+                                            </div>
+                                        </li>
+                                        <li
+                                            class="w-full border-b border-gray-200 sm:border-b-0 sm:border-r hover:bg-gray-100">
+                                            <div class="flex items-center pl-3">
+                                                <input id="horizontal-list-radio-id" type="radio" v-model="role"
+                                                    :value="'Teacher'" name="list-radio"
+                                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-5000 focus:ring-2"
+                                                    required>
+                                                <label for="horizontal-list-radio-id"
+                                                    class="py-3 ml-2 w-full text-sm font-medium text-gray-900 cursor-pointer">Teacher</label>
+                                            </div>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                             <div class="mb-4 md:flex md:justify-between">
                                 <div class="mb-4 md:mr-2 md:mb-0">
@@ -82,11 +112,19 @@
                                 </router-link>
                             </div>
                         </form>
-                        <div
-                            class="flex mx-auto mb-3 gap-2 bg-white max-w-fit p-3 rounded ring ring-gray-200 divide-x-2 cursor-pointer hover:bg-gray-50 hover:scale-105 transition-all">
-                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/800px-Google_%22G%22_Logo.svg.png"
-                                alt="" srcset="" width="30" class="">
-                            <button @click="signInWithGoogle" class="pl-2 font-semibold"> Sign Up with Google</button>
+                        <div class=" p-3 text-center">
+                            <span class=" text-red-500 italic mb-3" v-if="!role">Please choose a role before.</span>
+                            <button @click="signInWithGoogle" class="pl-2 font-semibold flex mx-auto mb-3 gap-2 max-w-fit p-3 rounded ring
+                                 ring-gray-200 divide-x-2 disabled:bg-gray-400 disabled:text-gray-100
+                                 " :class="{ ' hover:bg-gray-50 hover:scale-105 transition-all': role }"
+                                :disabled="!role">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/800px-Google_%22G%22_Logo.svg.png"
+                                    alt="" srcset="" width="30" class="">
+                                <span class="p-2">
+                                    Sign Up with
+                                    Google
+                                </span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -105,9 +143,10 @@ export default {
         const registerPlaceholder = {
             displayName: { firstName: '', lastName: '' },
             email: '',
-            password: { password: '', confirm: '' }
-        }
+            password: { password: '', confirm: '' },
 
+        }
+        const role = ref('')
         const test = ref(false)
         const register_form = ref({})
         const store = useStore();
@@ -117,7 +156,13 @@ export default {
                 register_form.value.displayName = registerPlaceholder.displayName.firstName + ' ' + registerPlaceholder.displayName.lastName
                 register_form.value.email = registerPlaceholder.email
                 register_form.value.password = registerPlaceholder.password.password
-                store.dispatch("register", register_form.value);
+                if (role.value) {
+                    register_form.value.role = role.value
+                    console.log(register_form.value.role);
+                    store.dispatch("register", register_form.value);
+                } else {
+                    console.log('error');
+                }
 
             } else {
                 test.value = true;
@@ -127,7 +172,7 @@ export default {
         }
 
         const signInWithGoogle = () => {
-            store.dispatch("signUserInGoogle");
+            store.dispatch("signUserInGoogle",role.value);
         };
         const userData = () => {
             store.dispatch("fetchUser");
@@ -139,7 +184,8 @@ export default {
             signInWithGoogle,
             userData,
             registerPlaceholder,
-            test
+            test,
+            role
         };
     },
 

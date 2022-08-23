@@ -60,6 +60,7 @@ const routes = [
     component: () => import("../views/Courses/CreateCourseView.vue"),
     meta: {
       requiresAuth: true,
+      teacherOnly: true,
     },
   },
 

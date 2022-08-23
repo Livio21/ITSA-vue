@@ -22,7 +22,7 @@ import { ref, toRef } from 'vue';
 
 export default {
 
-    name: 'fileDrop',
+    name: 'fileDropCourse',
     props: ['pfpUrl', 'editable'],
 
     setup(props) {

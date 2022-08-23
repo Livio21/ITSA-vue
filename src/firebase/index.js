@@ -31,7 +31,15 @@ const storage = getStorage(app);
 const profilePicture = (name) => {
   return ref(storage, "profile/" + name);
 };
+
+const coursePictureStrg = (name) => {
+  return ref(storage, "courseSpan/" + name);
+};
+
 const coursesCollection = collection(db, "Courses");
+const usersCollection = collection(db, "Users");
+const quizzesCollection = collection(db, "Quizzes");
+
 
 getDocs(coursesCollection)
   .then((snapshot) => {
@@ -45,4 +53,13 @@ getDocs(coursesCollection)
     console.log(err.message);
   });
 
-export { auth, db, coursesCollection, storage, profilePicture };
+export {
+  auth,
+  db,
+  coursesCollection,
+  storage,
+  profilePicture,
+  coursePictureStrg,
+  usersCollection,
+  quizzesCollection,
+};

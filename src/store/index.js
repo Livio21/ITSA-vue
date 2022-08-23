@@ -1,6 +1,6 @@
 import { createStore } from "vuex";
 import router from "../router";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
 
 // import { db } from "../firebase";
 import {
@@ -13,14 +13,16 @@ import {
   updateEmail,
   updatePassword,
 } from "firebase/auth";
+import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+
 // import { onSnapshot } from "firebase/firestore";
-// import { addDoc } from "firebase/firestore";
 
 export default createStore({
   state: {
     user: null,
     showNav: false,
     course: null,
+    isNew: null,
   },
   getters: {},
   mutations: {
@@ -35,6 +37,9 @@ export default createStore({
     },
     CURR_COURSE(state, payload) {
       state.course = payload;
+    },
+    NEW_USER(state, payload) {
+      state.isNew = payload;
     },
   },
   actions: {
@@ -80,36 +85,24 @@ export default createStore({
       commit("CLEAR_USER");
       router.push("/login");
     },
-
-    // async getCourse({commit}){
-    //   onSnapshot(collection(db, "Courses"), (querySnapshot) => {
-    //     querySnapshot.forEach((doc) => {
-    //       const test = {
-    //         id: doc.id,
-    //         title: doc.data().title,
-    //       };
-
-    //       courseTitles.value.push(test);
-    //     });
-    //     console.log(courseTitles.value);
-    //   });
-    // },
     async login({ commit }, details) {
       const { email, password } = details;
-      try {
-        await signInWithEmailAndPassword(auth, email, password);
-      } catch (error) {
-        switch (error.code) {
-          case "auth/user-not-found":
-            alert("User not found");
-            break;
-          case "auth/wrong-password":
-            alert("Wrong password");
-        }
-        return;
-      }
-      commit("SET_USER", auth.currentUser);
-      router.push("/");
+
+      await signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          commit("SET_USER", auth.currentUser);
+          router.push("/");
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case "auth/user-not-found":
+              alert("User not found");
+              break;
+            case "auth/wrong-password":
+              alert("Wrong password");
+          }
+          return;
+        });
     },
 
     async logout({ commit }) {
@@ -119,43 +112,72 @@ export default createStore({
     },
 
     async register({ commit }, details) {
-      const { displayName, email, password } = details;
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        updateProfile(auth.currentUser, {
-          displayName: displayName,
-          photoURL: "https://freesvg.org/img/abstract-user-flat-4.png",
-        });
-      } catch (error) {
-        switch (error.code) {
-          case "auth/email-already-in-use":
-            alert("email-already-in-use");
-            break;
-          case "auth/invalid-email":
-            alert("invalid email");
-        }
-        return;
-      }
-      commit("SET_USER", auth.currentUser);
-      router.push("/");
-    },
-    async signUserInGoogle({ commit }) {
-      const provider = new GoogleAuthProvider();
-      try {
-        await signInWithPopup(auth, provider);
-      } catch (error) {
-        switch (error.code) {
-          case "auth/account-exists-with-different-credential":
-            alert("User's email already exists.");
-            break;
-          case "auth/invalid-email":
-            alert("invalid email");
-        }
-        return;
-      }
+      const { displayName, email, password, role } = details;
 
-      commit("SET_USER", auth.currentUser);
-      router.push("/");
+      await createUserWithEmailAndPassword(auth, email, password)
+        .then(async () => {
+          await updateProfile(auth.currentUser, {
+            displayName: displayName,
+            photoURL: "https://freesvg.org/img/abstract-user-flat-4.png",
+          });
+          await setDoc(doc(db, "Users", auth.currentUser.uid), {
+            name: displayName,
+            email: email,
+            role: role,
+          });
+          commit("SET_USER", auth.currentUser);
+          router.push("/");
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case "auth/email-already-in-use":
+              alert("email-already-in-use");
+              break;
+            case "auth/invalid-email":
+              alert("invalid email");
+          }
+          return;
+        });
+    },
+    async check({ commit }) {
+      const docSnap = await getDoc(doc(db, "Users", auth.currentUser.id));
+      if (docSnap.exists()) {
+        commit("NEW_USER", false);
+      } else {
+        commit("NEW_USER", true);
+      }
+    },
+    async signUserInGoogle({ commit }, role) {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider)
+        .then(async (result) => {
+          onSnapshot(doc(db, "Users", result.user.uid), (docSnap) => {
+            if (!docSnap.exists()) {
+              setDoc(doc(db, "Users", auth.currentUser.uid), {
+                name: auth.currentUser.displayName,
+                email: auth.currentUser.email,
+                role: role,
+              }).then(() => {
+                commit("SET_USER", auth.currentUser);
+                router.push("/");
+                console.log("success, new user");
+              });
+            } else {
+              commit("SET_USER", auth.currentUser);
+              router.push("/");
+              console.log("success, old user");
+            }
+          });
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case "auth/account-exists-with-different-credential":
+              alert("User's email already exists.");
+              break;
+            case "auth/invalid-email":
+              alert("invalid email");
+          }
+        });
     },
 
     fetchUser({ commit }) {
