@@ -7,8 +7,16 @@ const routes = [
     path: "/",
     name: "home",
     component: HomeView,
+    meta: {},
+  },
+  {
+    path: "/verify",
+    name: "verify",
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/User/VerifiedView.vue"),
     meta: {
       requiresAuth: true,
+      requiresVer: false,
     },
   },
   {
@@ -16,9 +24,7 @@ const routes = [
     name: "about",
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
-    meta: {
-      requiresAuth: true,
-    },
+    meta: {},
   },
   {
     path: "/test",
@@ -29,12 +35,13 @@ const routes = [
     },
   },
   {
-    path: "/courses/:courseName",
+    path: "/courses/:courseName/:courseID",
     name: "courses",
     component: () => import("../views/Courses/CourseView.vue"),
     props: true,
     meta: {
       requiresAuth: true,
+      requiresVer: true,
     },
   },
   {
@@ -43,6 +50,7 @@ const routes = [
     component: () => import("../views/Quizz/CreateQuizzes.vue"),
     meta: {
       requiresAuth: true,
+      requiresVer: true,
     },
   },
   // {
@@ -60,6 +68,7 @@ const routes = [
     component: () => import("../views/Courses/CreateCourseView.vue"),
     meta: {
       requiresAuth: true,
+      requiresVer: true,
       teacherOnly: true,
     },
   },
@@ -78,6 +87,7 @@ const routes = [
     component: () => import("../views/User/EditProfile.vue"),
     meta: {
       requiresAuth: true,
+      requiresVer: true,
     },
   },
   {
@@ -111,6 +121,14 @@ router.beforeEach((to, from, next) => {
     !auth.currentUser
   ) {
     next("/login");
+    return;
+  }
+  if (
+    to.matched.some((record) => record.meta.requiresVer) &&
+    to.matched.some((record) => record.meta.requiresAuth) &&
+    !auth.currentUser.emailVerified
+  ) {
+    next("/verify");
     return;
   }
   next();

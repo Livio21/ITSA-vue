@@ -21,24 +21,32 @@
             required />
           <label for="color" class="material-symbols-outlined cursor-pointer p-3 animate-pulse">colorize</label>
         </div>
-        <input type="color" id="color" class="opacity-0" v-model="newCourse.color" @input="colorPicker">
+        <input type="color" id="color" class="opacity-0" v-model="newCourse.color" @input="textColorPicker">
         <input type="file" accept="image/*" id="coursePicture" class="coursePicture hidden" :disabled="!isUploaded">
       </div>
 
       <div class="border-b-2">
         <nav class="self-center text-slate-700 ">
           <ul class="flex text-xl  justify-center divide-x-2 divide-slate-100">
-            <li class="active:border-b-2 active:bg-slate-300 hover:bg-slate-100 p-5 rounded-tl-lg">
-              <a href="">Materials</a>
+            <li class="active:border-b-2 active:bg-slate-300 hover:bg-slate-100 p-5 rounded-tl-lg cursor-pointer"
+              @click="show = 'materials'">
+              <a>Materials</a>
             </li>
-            <li class="active:border-b-2 active:bg-slate-300 hover:bg-slate-100 p-5">
-              <a href="">Tools</a>
+            <li class="active:border-b-2 active:bg-slate-300 hover:bg-slate-100 p-5 cursor-pointer"
+              @click="show = 'tools'">
+              <a>Tools</a>
             </li>
-            <li class="active:border-b-2 active:bg-slate-300 hover:bg-slate-100 p-5 rounded-tr-lg">
-              <a href="">Quizzes</a>
+            <li class="active:border-b-2 active:bg-slate-300 hover:bg-slate-100 p-5 rounded-tr-lg cursor-pointer"
+              @click="show = 'quizzes'">
+              <a>Quizzes</a>
             </li>
           </ul>
         </nav>
+      </div>
+      <div>
+        <MaterialsComponent v-if="show == 'materials'"></MaterialsComponent>
+        <ToolsComponent v-if="show == 'tools'"></ToolsComponent>
+        <QuizzesComponent v-if="show == 'quizzes'"></QuizzesComponent>
       </div>
       <div class=" self-end justify-self-end">
         <button type="submit"
@@ -51,17 +59,21 @@
 
 <script>
 import { db } from "@/firebase";
-
+import MaterialsComponent from "@/components/Course/MaterialsComponent.vue";
+import ToolsComponent from "@/components/Course/ToolsComponent.vue";
+import QuizzesComponent from "@/components/Course/QuizzesComponent.vue";
 import { ref } from "vue";
 
 import { addDoc, deleteDoc, collection, onSnapshot, doc } from "@firebase/firestore";
 import { uploadBytes, getDownloadURL } from "firebase/storage";
 
 import { coursePictureStrg } from "@/firebase"
+import router from "@/router";
 
 
 
 export default {
+  components: { MaterialsComponent, ToolsComponent, QuizzesComponent },
 
   setup() {
     const active = ref(false)
@@ -69,6 +81,7 @@ export default {
     const courses = ref([])
     const courseID = ref(null)
     const isUploaded = ref(true)
+    const show = ref('materials')
 
 
     let coursePicture = ref({})
@@ -86,9 +99,9 @@ export default {
         document.getElementById('a').style.backgroundImage = `url(${newCourse.value.picUrl})`
       }
     }
-    const colorPicker = () => {
+    const textColorPicker = () => {
       if (newCourse.value.color) {
-        document.getElementById('a').style.color = newCourse.value.color
+        document.getElementById('title').style.color = newCourse.value.color
       }
       console.log(newCourse.value.color);
     }
@@ -110,7 +123,10 @@ export default {
     };
 
     const addCourse = async () => {
-      await addDoc(collection(db, 'Courses'), newCourse.value)
+      await addDoc(collection(db, 'Courses'), newCourse.value).then(() => {
+        router.push({ name: 'courses', params: { courseName: newCourse.value.title.replaceAll(' ', '-') } })
+        console.log(router.currentRoute.value);
+      })
     }
     // const q = query(doc(collection(db, 'Courses'),where(doc.id == courseID.value)))
     const removeCourse = async () => {
@@ -133,7 +149,7 @@ export default {
       })
       console.log(courses.value);
     })
-    return { newCourse, removeCourse, addCourse, courseID, toggleActive, drop, selectedFile, isUploaded, handleFileUpload, coursePicture, changeBackground, colorPicker };
+    return { newCourse, removeCourse, addCourse, courseID, toggleActive, drop, selectedFile, isUploaded, handleFileUpload, coursePicture, changeBackground, textColorPicker, show };
   },
 
 };

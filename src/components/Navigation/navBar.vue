@@ -4,7 +4,7 @@
       <div class="">
         <nav class="grid grid-flow-col py-3 mx-auto text-white">
           <header class="flex items-center max-w-fit px-4">
-            <button v-if="status()" @click="SHOW_NAV"
+            <button v-if="userData" @click="SHOW_NAV"
               class="focus:ring focus:ring-black cursor-pointer active:bg-slate-300 rounded-full hover:bg-slate-200 mr-5">
               <span v-if="!showNav" class="material-symbols-outlined text-black p-3">
                 menu
@@ -22,17 +22,18 @@
             </div>
           </header>
           <ul class="flex justify-end gap-5 font-bold list-none px-3">
-            <router-link v-show="!status()"
+            <router-link v-show="!userData"
               class="rounded-full w-28 text-center bg-blue-600 hover:cursor-pointer hover:shadow-xl hover:bg-blue-500 active:bg-blue-700 focus:ring focus:ring-black p-3"
               to="/login">Log In</router-link>
-            <div v-if="status()" class="flex items-center gap-3">
+            <div v-if="userData" class="flex items-center gap-3">
               <div class="flex items-center" @click="router.push('/my-profile')">
-                <div class="w-[50px] h-[50px] mx-3 cursor-pointer rounded-full ring hover:scale-105 hover:shadow-lg active:scale-100 overflow-hidden">
-                  <img :src="store.state.user.photoURL" alt="" width="50" height="50" />
+                <div
+                  class="w-[50px] h-[50px] mx-3 cursor-pointer rounded-full ring hover:scale-105 hover:shadow-lg active:scale-100 overflow-hidden">
+                  <img :src="userData.photoURL" alt="" width="50" height="50" referrerpolicy="no-referrer" />
                 </div>
                 <h1
                   class="text-black hover:border-b-2 cursor-pointer hover:border-black hover:scale-105 active:scale-100 hidden sm:block">
-                  {{ store.state.user.displayName }}
+                  {{ userData.displayName }}
                 </h1>
               </div>
               <button @click="$store.dispatch('logout')"
@@ -46,50 +47,51 @@
       </div>
     </div>
   </div>
+  
 </template>
-
 <script>
 import { onBeforeMount, onMounted } from "vue";
 import { mapMutations, mapState, useStore } from "vuex";
-
 import router from "@/router";
+import { computed } from "@vue/reactivity";
+
 export default {
   name: "HomeView",
-  components: {},
+  components: { },
 
   setup() {
     const store = useStore();
+    const userData = computed(() => store.state.user)
 
-    const userData = store.state.user;
     // const uid = userData.uid;
     // console.log(userData);
 
-    var prevScrollpos = window.pageYOffset;
+    let prevScrollpos = window.scrollY;
     window.onscroll = function () {
-      var currentScrollPos = window.pageYOffset;
+      let currentScrollPos = window.scrollY;
       if (prevScrollpos > currentScrollPos) {
-        document.getElementById("navbar").style.top = "0";
+        document.getElementById("navbar").style.top = "0px";
       } else {
         document.getElementById("navbar").style.top = "-74px";
       }
       prevScrollpos = currentScrollPos;
     };
-    const status = () => {
-      if (store.state.user) {
-        return true;
-      } else {
-        return false;
-      }
-    };
+    // const status = () => {
+    //   if (userData.value) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+    // };
 
-    onBeforeMount(() => { });
-    onMounted(() => {
+
+    onBeforeMount(() => {
       store.dispatch("fetchUser");
-      status();
-
-      // console.log(status(), store.state.user);
     });
-    return { store, status, router, userData };
+    onMounted(() => {
+
+    });
+    return { store, router, userData };
   },
   methods: {
     toggleLogIn() {
@@ -99,26 +101,29 @@ export default {
   },
   computed: {
     ...mapState(["showNav"]),
+    ...mapState(['user']),
+
+
   },
 };
 </script>
 
-<style lang="css" scoped>
-@import url("https://fonts.googleapis.com/css2?family=Sora&display=swap");
-
-nav {
-  font-family: "Sora", sans-serif;
-}
-
-* {
-  transition: all 150ms;
-}
-
-#navbar {
-  transition: top 0.3s;
-}
-
-.material-symbols-outlined {
-  font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
-}
-</style>
+    <style lang="css" scoped>
+    @import url("https://fonts.googleapis.com/css2?family=Sora&display=swap");
+    
+    nav {
+      font-family: "Sora", sans-serif;
+    }
+    
+    * {
+      transition: all 150ms;
+    }
+    
+    #navbar {
+      transition: top 0.3s;
+    }
+    
+    .material-symbols-outlined {
+      font-variation-settings: "FILL" 1, "wght" 400, "GRAD" 0, "opsz" 24;
+    }
+    </style>

@@ -12,6 +12,7 @@ import {
   updateProfile,
   updateEmail,
   updatePassword,
+  sendEmailVerification,
 } from "firebase/auth";
 import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
 
@@ -43,29 +44,43 @@ export default createStore({
     },
   },
   actions: {
-    async updateUser({ commit }, details) {
-      const { displayName, photoURL } = details;
-
-      await updateProfile(auth.currentUser, {
-        displayName,
-        photoURL,
-      })
-        .then(() => {
-          console.log("Profile updated");
-          alert("Success");
-          commit("SET_USER", auth.currentUser);
-          router.push("/");
+    async updateUser({ commit }, profile) {
+      const { displayName, photoURL } = profile;
+      if (displayName != undefined) {
+        await updateProfile(auth.currentUser, profile)
+          .then(() => {
+            setDoc(doc(db, "Users", auth.currentUser.uid), {
+              displayName: displayName,
+              photoURL: photoURL,
+            });
+            console.log("Profile updated");
+            alert("Success");
+            commit("SET_USER", auth.currentUser);
+          })
+          .catch((err) => {
+            console.log(err.message, "error");
+          });
+      } else if (displayName == undefined) {
+        console.log(displayName);
+        await updateProfile(auth.currentUser, {
+          photoURL,
         })
-        .catch((err) => {
-          console.log(err.message, "error");
-        });
+          .then(() => {
+            console.log("Profile updated");
+            alert("Success");
+            commit("SET_USER", auth.currentUser);
+          })
+          .catch((err) => {
+            console.log(err.message, "error");
+          });
+      }
     },
     async updateUserEmail({ commit }, details) {
       const { email } = details;
 
       await updateEmail(auth.currentUser, email)
         .then(() => {
-          console.log("email updated");
+          alert("Email updated!");
           commit("SET_USER", auth.currentUser);
         })
         .catch((err) => {
@@ -76,7 +91,7 @@ export default createStore({
       const { password } = details;
       await updatePassword(auth.currentUser, password)
         .then(() => {
-          console.log("password updated");
+          alert("Password updated!");
           commit("SET_USER", auth.currentUser);
         })
         .catch((err) => {
@@ -115,18 +130,25 @@ export default createStore({
       const { displayName, email, password, role } = details;
 
       await createUserWithEmailAndPassword(auth, email, password)
-        .then(async () => {
-          await updateProfile(auth.currentUser, {
-            displayName: displayName,
-            photoURL: "https://freesvg.org/img/abstract-user-flat-4.png",
-          });
-          await setDoc(doc(db, "Users", auth.currentUser.uid), {
-            name: displayName,
-            email: email,
-            role: role,
-          });
-          commit("SET_USER", auth.currentUser);
-          router.push("/");
+        .then(async (usercred) => {
+          await sendEmailVerification(usercred.user)
+            .then(() => {
+              commit("SET_USER", auth.currentUser);
+              router.push("/verify");
+              updateProfile(auth.currentUser, {
+                displayName: displayName,
+                photoURL: "https://freesvg.org/img/abstract-user-flat-4.png",
+              });
+              setDoc(doc(db, "Users", auth.currentUser.uid), {
+                name: displayName,
+                email: email,
+                role: role,
+                photoURL: "https://freesvg.org/img/abstract-user-flat-4.png",
+              });
+            })
+            .catch((error) => {
+              alert(error);
+            });
         })
         .catch((error) => {
           switch (error.code) {
@@ -149,35 +171,42 @@ export default createStore({
     },
     async signUserInGoogle({ commit }, role) {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider)
-        .then(async (result) => {
-          onSnapshot(doc(db, "Users", result.user.uid), (docSnap) => {
-            if (!docSnap.exists()) {
-              setDoc(doc(db, "Users", auth.currentUser.uid), {
-                name: auth.currentUser.displayName,
-                email: auth.currentUser.email,
-                role: role,
-              }).then(() => {
+      if (!role) {
+        alert("New user, please select your role.");
+        router.push("/register");
+        console.log("error");
+      } else {
+        await signInWithPopup(auth, provider)
+          .then((result) => {
+            onSnapshot(doc(db, "Users", result.user.uid), (docSnap) => {
+              if (!docSnap.exists()) {
+                setDoc(doc(db, "Users", auth.currentUser.uid), {
+                  name: auth.currentUser.displayName,
+                  email: auth.currentUser.email,
+                  photo: auth.currentUser.photoURL,
+                  role: role,
+                }).then(() => {
+                  commit("SET_USER", auth.currentUser);
+                  router.push("/");
+                  console.log("success, new user");
+                });
+              } else {
                 commit("SET_USER", auth.currentUser);
                 router.push("/");
-                console.log("success, new user");
-              });
-            } else {
-              commit("SET_USER", auth.currentUser);
-              router.push("/");
-              console.log("success, old user");
+                console.log("successful, old user");
+              }
+            });
+          })
+          .catch((error) => {
+            switch (error.code) {
+              case "auth/account-exists-with-different-credential":
+                alert("User's email already exists.");
+                break;
+              case "auth/invalid-email":
+                alert("invalid email");
             }
           });
-        })
-        .catch((error) => {
-          switch (error.code) {
-            case "auth/account-exists-with-different-credential":
-              alert("User's email already exists.");
-              break;
-            case "auth/invalid-email":
-              alert("invalid email");
-          }
-        });
+      }
     },
 
     fetchUser({ commit }) {

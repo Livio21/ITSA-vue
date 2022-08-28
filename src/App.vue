@@ -1,9 +1,8 @@
 <template>
-  <navBar class=""></navBar>
-  <div class="flex min-h-screen overflow-hidden transition-all duration-300">
-    <SideNav class="flex-shrink"></SideNav>
-    <div class="py-5 sm:p-10 flex-grow ">
-      <!-- <router-view class="" :key="$route.path" /> -->
+  <navBar />
+  <div class="flex min-h-screen h-fit overflow-hidden transition-all duration-300">
+    <sideNav />
+    <div class="p-10 basis-full">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" :key="$route.path" />
@@ -32,6 +31,7 @@ export default {
     const store = useStore();
     onBeforeMount(() => {
       store.dispatch("fetchUser");
+
     });
   },
   computed: {
@@ -44,6 +44,10 @@ export default {
 
 #app {
   font-family: "Poppins", sans-serif;
+}
+
+.test {
+  transition: all flex 0.5s
 }
 
 .fade-enter-active,

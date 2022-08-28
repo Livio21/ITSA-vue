@@ -39,7 +39,8 @@
                                         required />
                                 </div>
                                 <label for="roles" class="text-sm font-bold">Roles:</label>
-                                <div class=" md:flex self-center basis-1/2" id="roles">
+                                <div class=" md:flex self-center basis-1/2" :class="{ 'animate-pulse ring ring-red-500 rounded': !focus }"
+                                    id="roles">
                                     <ul
                                         class="items-center text-center w-full h-1/2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 sm:flex ">
                                         <li
@@ -48,7 +49,7 @@
                                                 <input id="horizontal-list-radio-license" type="radio" v-model="role"
                                                     :value="'Student'" name="list-radio"
                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2  "
-                                                    required>
+                                                    required @focusin="focus = true">
                                                 <label for="horizontal-list-radio-license"
                                                     class="py-3 ml-2 w-full text-sm font-medium text-gray-900 cursor-pointer ">Student</label>
                                             </div>
@@ -59,7 +60,7 @@
                                                 <input id="horizontal-list-radio-id" type="radio" v-model="role"
                                                     :value="'Teacher'" name="list-radio"
                                                     class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-5000 focus:ring-2"
-                                                    required>
+                                                    required @focusin="focus = true">
                                                 <label for="horizontal-list-radio-id"
                                                     class="py-3 ml-2 w-full text-sm font-medium text-gray-900 cursor-pointer">Teacher</label>
                                             </div>
@@ -146,6 +147,7 @@ export default {
             password: { password: '', confirm: '' },
 
         }
+        const focus = ref(false)
         const role = ref('')
         const test = ref(false)
         const register_form = ref({})
@@ -172,7 +174,7 @@ export default {
         }
 
         const signInWithGoogle = () => {
-            store.dispatch("signUserInGoogle",role.value);
+            store.dispatch("signUserInGoogle", role.value);
         };
         const userData = () => {
             store.dispatch("fetchUser");
@@ -185,7 +187,8 @@ export default {
             userData,
             registerPlaceholder,
             test,
-            role
+            role,
+            focus
         };
     },
 

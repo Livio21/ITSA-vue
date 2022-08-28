@@ -5,7 +5,7 @@ import { getAuth } from "firebase/auth";
 
 import { getStorage, ref } from "firebase/storage";
 
-import { collection, getDocs, getFirestore } from "firebase/firestore";
+import { collection, getFirestore } from "firebase/firestore";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -35,23 +35,25 @@ const profilePicture = (name) => {
 const coursePictureStrg = (name) => {
   return ref(storage, "courseSpan/" + name);
 };
+const coursePostFiles = (name) => {
+  return ref(storage, "coursePost/" + name);
+};
 
 const coursesCollection = collection(db, "Courses");
 const usersCollection = collection(db, "Users");
 const quizzesCollection = collection(db, "Quizzes");
 
-
-getDocs(coursesCollection)
-  .then((snapshot) => {
-    let courses = [];
-    snapshot.docs.forEach((doc) => {
-      courses.push({ ...doc.data(), id: doc.id });
-    });
-    console.log(courses);
-  })
-  .catch((err) => {
-    console.log(err.message);
-  });
+// getDocs(coursesCollection)
+//   .then((snapshot) => {
+//     let courses = [];
+//     snapshot.docs.forEach((doc) => {
+//       courses.push({ ...doc.data(), id: doc.id });
+//     });
+//     console.log(courses);
+//   })
+//   .catch((err) => {
+//     console.log(err.message);
+//   });
 
 export {
   auth,
@@ -62,4 +64,5 @@ export {
   coursePictureStrg,
   usersCollection,
   quizzesCollection,
+  coursePostFiles,
 };

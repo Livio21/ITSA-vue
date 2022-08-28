@@ -1,10 +1,15 @@
 <template>
   <div>
-    <div class="flex flex-col max-w-fit p-10 my-10 mx-auto  justify-center items-center gap-3 bg-slate-200 rounded-lg shadow-lg">
-      <img :src="userPfp()" width="100" alt="" class="rounded-full ring" />
+    <div
+      class="flex flex-col max-w-fit p-10 my-10 mx-auto  justify-center items-center gap-3 bg-slate-200 rounded-lg shadow-lg">
+      <img :src="userPfp()" width="100" alt="" class="rounded-full ring" referrerpolicy="no-referrer" />
       <h1>Name: {{ userData.displayName }}</h1>
       <h1>Email: {{ userData.email }}</h1>
-      <h1>Provider: {{ userData.providerId }}</h1>
+      <h1 :class="{ 'italic': userData.emailVerified }">Email <span
+          :class="{ 'text-red-500': !userData.emailVerified }">{{ !userData.emailVerified ? 'is not' :
+              'is'
+          }}</span>
+        verified</h1>
       <h1 class="">
         Unique ID:
         <span @click="clipboardF()" id="uid"

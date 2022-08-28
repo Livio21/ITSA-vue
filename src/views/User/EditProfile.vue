@@ -1,7 +1,7 @@
 <template>
   <div>
     <form action="" class="mx-auto flex flex-col max-w-fit gap-10  bg-slate-200 p-10 sm:rounded-2xl shadow-lg"
-      @submit="updateUser">
+      @submit.prevent="updateUser">
       <div class="max-w-fit self-center">
 
         <FileDrop id="dropZone" @drop.prevent="drop" @change="selectedFile" :pfpUrl="pfpUrl" :editable="edit" />
@@ -27,13 +27,13 @@
       </div>
       <div class="flex  flex-col md:flex-row gap-3">
         <div class="w-[350px] flex flex-col md:flex-row justify-between items-center">
-          <label for="password">Password: </label>
+          <label for="password">Current Password: </label>
           <input type="password" name="password" placeholder="*********"
             class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
             v-model="cpassword[0]" required>
         </div>
         <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center" v-if="edit">
-          <label for="cpassword">Confirm: </label>
+          <label for="cpassword">New Password: </label>
           <input type="password" name="cpassword" placeholder="*********"
             class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
             v-model="cpassword[1]" required>
@@ -70,9 +70,9 @@
 import { onMounted, ref } from "vue";
 import { uploadBytes, getDownloadURL } from "firebase/storage";
 import { profilePicture } from "@/firebase";
-
 import { useStore } from "vuex";
 import FileDrop from "@/components/fileDrop.vue";
+import { reauthenticateWithCredential, EmailAuthProvider } from "@firebase/auth";
 export default {
   setup() {
     const store = useStore();
@@ -88,6 +88,16 @@ export default {
     const pfpUrl = ref('')
     const cpassword = ref([])
 
+    // const test = () => {
+    //   const credential = promptForCredentials();
+    //   reauthenticateWithCredential(userData, credential).then(() => {
+    //     // User re-authenticated.
+    //   }).catch((error) => {
+    //     alert(error);
+    //     // An error ocurred
+    //     // ...
+    //   });
+    // }
     const toggleEdit = () => {
       edit.value = !edit.value
     }
@@ -117,19 +127,24 @@ export default {
         })
       }
     };
+    const reauth = (currentPassword) => {
+      const cred = EmailAuthProvider.credential(userData.email, currentPassword)
+      return reauthenticateWithCredential(userData, cred)
+    }
     const updateUser = () => {
       if (userDetails.value) {
         if (updateEmailandPass.value == true) {
-          if (cpassword.value[0] == cpassword.value[1]) {
-            cpassword.value[0] = userDetails.value.password
+          reauth(cpassword.value[0]).then(() => {
+            cpassword.value[1] = userDetails.value.password
             console.log(cpassword.value);
             store.dispatch("updateUserEmail", userDetails.value);
             store.dispatch("updatePass", userDetails.value);
-          } else {
-            alert("Passwords don't match!")
-          }
+          }).catch((error) => {
+            alert(error);
+          })
         } else {
-          if (fullName.value) {
+          if (fullName.value.firstName != undefined && fullName.value.lastName != undefined) {
+            console.log(fullName.value);
             userDetails.value.displayName = fullName.value.firstName + ' ' + fullName.value.lastName
             if (userDetails.value.photoURL) {
               console.log(userDetails.value);
@@ -141,6 +156,7 @@ export default {
             }
           } else {
             userDetails.value.displayName = userData.displayName;
+            console.log(userDetails.value.displayName);
             store.dispatch("updateUser", userDetails.value);
           }
         }
@@ -172,7 +188,8 @@ export default {
       fullName,
       cpassword,
       isUploaded,
-      updateEmailandPass
+      updateEmailandPass,
+      reauth
     };
   },
   methods: {},
