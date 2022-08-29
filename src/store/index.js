@@ -24,6 +24,8 @@ export default createStore({
     showNav: false,
     course: null,
     isNew: null,
+    showEmbed: null,
+    embedSrc: null,
   },
   getters: {},
   mutations: {
@@ -35,6 +37,10 @@ export default createStore({
     },
     SHOW_NAV(state) {
       state.showNav = !state.showNav;
+    },
+    SHOW_EMBED(state, src) {
+      state.showEmbed = !state.showEmbed;
+      state.embedSrc = src;
     },
     CURR_COURSE(state, payload) {
       state.course = payload;

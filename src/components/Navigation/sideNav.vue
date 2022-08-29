@@ -1,56 +1,58 @@
 <template>
-
-  <div v-if="store.state.user" class="">
-    <transition name="slide-fade">
-      <div class="fixed flex flex-col justify-center top-0 bg-slate-100 h-screen rounded-br-lg  p-2 w-72  divide-y-2 text-center z-0" v-show="showNav">
-        <div class="mainNavigation flex flex-col  text-base font-medium gap-3 p-2">
-          <router-link
-            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
-            to="/">Home</router-link>
-          <router-link class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3
+  <div v-if="store.state.user">
+    <div class="bg-slate-100">
+      <transition name="slide-fade">
+        <div class="flex flex-col justify-center sticky top-2 rounded-br-lg  p-2 w-72  divide-y-2 text-center z-0"
+          v-show="showNav">
+          <div class="mainNavigation flex flex-col  text-base font-medium gap-3 p-2">
+            <router-link
+              class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+              to="/">Home</router-link>
+            <router-link class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3
               " to="/about">About</router-link>
-        </div>
-        <div class="signinNavigation flex flex-col text-base font-medium gap-3 p-2">
-          <router-link
-            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
-            to="/my-profile">My Profile
-          </router-link>
-          <router-link
-            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
-            :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/edit-profile">
-            Edit Profile
-          </router-link>
-        </div>
-        <div class="courseNavigation flex flex-col text-base font-medium gap-3 p-2">
-          <router-link
-            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
-            :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/Course">View
-            Course
-          </router-link>
-          <router-link
-            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
-            :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/create-course">Create Course
-          </router-link>
-          <router-link
-            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
-            :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/test">Test
-            Features
-          </router-link>
-        </div>
-        <div class="courseNavigation flex flex-col text-base font-medium gap-3 p-2"
-          v-show="store.state.user.emailVerified">
-          <button v-for="(courseTitle, index) in courseTitles" :key="index"
-            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
-            @click="viewCourse(courseTitle.title, courseTitle.id)" :title="courseTitle.title">{{
-            courseTitle.title
-            }}</button>
+          </div>
+          <div class="signinNavigation flex flex-col text-base font-medium gap-3 p-2">
+            <router-link
+              class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+              to="/my-profile">My Profile
+            </router-link>
+            <router-link
+              class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+              :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/edit-profile">
+              Edit Profile
+            </router-link>
+          </div>
+          <div class="courseNavigation flex flex-col text-base font-medium gap-3 p-2">
+            <router-link
+              class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+              :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/Course">View
+              Course
+            </router-link>
+            <router-link
+              class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+              :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/create-course">Create Course
+            </router-link>
+            <router-link
+              class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+              :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/test">Test
+              Features
+            </router-link>
+          </div>
+          <div class="courseNavigation flex flex-col text-base font-medium gap-3 p-2"
+            v-show="store.state.user.emailVerified">
+            <button v-for="(courseTitle, index) in courseTitles" :key="index"
+              class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+              @click="viewCourse(courseTitle.title, courseTitle.id)" :title="courseTitle.title">{{
+                  courseTitle.title
+              }}</button>
 
+          </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </div>
     <button @click="store.commit('SHOW_NAV')"
-      class="fixed top-[80px] left-0 rounded-tr-lg  rounded-br-lg p-[14px] bg-slate-100"
-      :class="{ 'px-[0px] left-[288px] transition-all': showNav }"><span
+      class="fixed top-1/2 left-0 rounded-tr-lg h-[70px] w-[30px]  rounded-br-lg bg-slate-100"
+      :class="{ 'h-[100px] w-[50px] sticky top-[50%] left-[288px] transition-all': showNav }"><span
         class="material-symbols-outlined rotate-90 transition-all duration-200" :class="{ ' -rotate-90  ': !showNav }">
         expand_more
       </span></button>

@@ -1,13 +1,15 @@
 <template>
-  <navBar />
-  <div class="flex min-h-screen h-fit overflow-hidden transition-all duration-300">
-    <sideNav />
-    <div class="p-10 basis-full">
-      <router-view v-slot="{ Component }">
-        <transition name="fade" mode="out-in">
-          <component :is="Component" :key="$route.path" />
-        </transition>
-      </router-view>
+  <div class="grid grid-cols-2 transition-all duration-300 relative  ">
+    <navBar class="col-span-2" />
+    <div class="col-span-2 flex min-h-screen">
+      <SideNav class=""></SideNav>
+      <div class="p-10 basis-full">
+        <router-view v-slot="{ Component }">
+          <transition name="fade" mode="out-in">
+            <component :is="Component" :key="$route.path" class="main" />
+          </transition>
+        </router-view>
+      </div>
     </div>
   </div>
   <FooterComponent></FooterComponent>
@@ -59,4 +61,6 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
+
+
 </style>

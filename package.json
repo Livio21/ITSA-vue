@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "@mcistudio/vue-colorpicker": "^2.0.0",
+    "click-outside-vue3": "^4.0.1",
     "core-js": "^3.8.3",
     "firebase": "^9.9.2",
     "material-symbols": "^0.2.7",

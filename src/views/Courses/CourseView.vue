@@ -1,6 +1,6 @@
 <template>
   <div
-    class="flex flex-col min-h-screen max-w-[1360px] basis-full mx-auto p-10 ring ring-slate-100 ring-3 rounded-3xl gap-3 bg-slate-50">
+    class="flex flex-col min-h-screen w-fit md:max-w-[1360px] basis-full mx-auto p-10 ring ring-slate-100 ring-3 rounded-3xl gap-3 bg-slate-50 scroll-smooth ">
     <div class=" self-end">
       <button class=" bg-red-500 py-3 px-5 rounded-full text-white font-semibold hover:bg-red-400 active:bg-red-500"
         @click="removeCourse"> Delete </button>
@@ -107,7 +107,8 @@
             <div v-for="(file, index) in post.files" :key="index"
               class="ring-2 bg-white ring-slate-200 px-2 py-1 rounded flex items-center align-middle divide-x-2">
               <div class=" max-w-[200px] max-h-[100px] ">
-                <a :href="file.fileUrl" target="_blank" class=" text-ellipsis p-1">{{ file.fileName }}</a>
+                <button @click="store.commit('SHOW_EMBED', file.fileUrl)" class=" text-ellipsis p-1">{{ file.fileName
+                  }}</button>
               </div>
             </div>
           </div>
@@ -115,11 +116,12 @@
       </div>
       <div>
       </div>
+      <CourseComponentMaterials />
       <ToolsComponent v-if="show == 'tools'"></ToolsComponent>
       <QuizzesComponent v-if="show == 'quizzes'"></QuizzesComponent>
     </div>
-
   </div>
+  <FileEmbeddComponent></FileEmbeddComponent>
 </template>
 
 <script>
@@ -131,10 +133,12 @@ import QuizzesComponent from "@/components/Course/QuizzesComponent.vue";
 import { getDownloadURL, deleteObject, ref as refStrg, uploadBytesResumable } from "firebase/storage";
 import { coursePostFiles } from "@/firebase";
 import { auth } from "@/firebase";
-
+import FileEmbeddComponent from "@/components/Course/FileEmbeddComponent.vue";
+import { mapState, useStore } from "vuex";
+import CourseComponentMaterials from "@/components/courseComponentMaterials.vue";
 export default {
   props: ["courseName", "courseID"],
-  components: { ToolsComponent, QuizzesComponent },
+  components: { ToolsComponent, QuizzesComponent, FileEmbeddComponent, CourseComponentMaterials },
   setup(props) {
     const show = ref('posts')
     const isUploaded = ref()
@@ -144,6 +148,7 @@ export default {
     const coursePost = ref({})
     const postData = ref([{}])
     const uploadedFiles = ref([])
+    const store = useStore()
 
     const toggleActive = () => {
       active.value = !active.value
@@ -309,10 +314,13 @@ export default {
     return {
       course, removeCourse, show, drop, selectedFile, handleFileUpload, coursePost, createPost,
       toggleActive, active, uploadedFiles, deletePost, removeFile, isUploaded, clearFields, getPostData, getCourseData, postData,
-      expand, getFullDate
+      expand, getFullDate, store
     };
   },
   methods: {},
+  computed: {
+    ...mapState(["showEmbed"]),
+  },
 };
 </script>
 

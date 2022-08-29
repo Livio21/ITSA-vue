@@ -1,6 +1,6 @@
 <template>
-  <div class=" w-full sticky z-50" id="navbar">
-    <div class="bg-slate-100">
+  <div class=" w-full sticky top-0 max-h-fit overflow-auto z-20 bg-slate-100" id="navbar">
+    <div class="">
       <div class="">
         <nav class="grid grid-flow-col py-3 mx-auto text-white">
           <header class="flex items-center max-w-fit px-4">
@@ -47,17 +47,15 @@
       </div>
     </div>
   </div>
-  
 </template>
 <script>
 import { onBeforeMount, onMounted } from "vue";
 import { mapMutations, mapState, useStore } from "vuex";
 import router from "@/router";
 import { computed } from "@vue/reactivity";
-
 export default {
   name: "HomeView",
-  components: { },
+  components: {},
 
   setup() {
     const store = useStore();

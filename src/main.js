@@ -5,6 +5,6 @@ import router from "./router";
 import store from "./store";
 import "./index.css";
 import "material-symbols";
-import Croppa from "vue-croppa";
+import vClickOutside from "click-outside-vue3";
 
-createApp(App).use(store).use(router).use(Croppa).mount("#app");
+createApp(App).use(store).use(router).use(vClickOutside).mount("#app");
