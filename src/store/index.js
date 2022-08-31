@@ -13,34 +13,48 @@ import {
   updateEmail,
   updatePassword,
   sendEmailVerification,
+  getAdditionalUserInfo,
 } from "firebase/auth";
-import { doc, getDoc, onSnapshot, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  onSnapshot,
+  setDoc,
+  query,
+  where,
+  collection,
+} from "firebase/firestore";
 
 // import { onSnapshot } from "firebase/firestore";
 
 export default createStore({
   state: {
     user: null,
+    courseTitle: null,
+    courseUsers: null,
     showNav: false,
     course: null,
     isNew: null,
-    showEmbed: null,
-    embedSrc: null,
   },
   getters: {},
   mutations: {
     SET_USER(state, payload) {
       state.user = payload;
     },
+    SET_USER_ROLE(state, payload) {
+      state.user.role = payload;
+    },
     CLEAR_USER(state) {
       state.user = null;
     },
+    SET_COURSE(state, payload) {
+      state.courseTitle = payload;
+    },
+    SET_COURSE_USERS(state, payload) {
+      state.courseUsers = payload;
+    },
     SHOW_NAV(state) {
       state.showNav = !state.showNav;
-    },
-    SHOW_EMBED(state, src) {
-      state.showEmbed = !state.showEmbed;
-      state.embedSrc = src;
     },
     CURR_COURSE(state, payload) {
       state.course = payload;
@@ -111,8 +125,11 @@ export default createStore({
 
       await signInWithEmailAndPassword(auth, email, password)
         .then(() => {
-          commit("SET_USER", auth.currentUser);
-          router.push("/");
+          getDoc(doc(db, "Users", auth.currentUser.uid)).then((doc) => {
+            commit("SET_USER", auth.currentUser);
+            commit("SET_USER_ROLE", doc.data().role);
+            router.push("/");
+          });
         })
         .catch((error) => {
           switch (error.code) {
@@ -139,13 +156,16 @@ export default createStore({
         .then(async (usercred) => {
           await sendEmailVerification(usercred.user)
             .then(() => {
-              commit("SET_USER", auth.currentUser);
+              commit("SET_USER", auth.currentUser).then(() => {
+                commit("SET_USER_ROLE", role);
+              });
               router.push("/verify");
               updateProfile(auth.currentUser, {
                 displayName: displayName,
                 photoURL: "https://freesvg.org/img/abstract-user-flat-4.png",
               });
               setDoc(doc(db, "Users", auth.currentUser.uid), {
+                id: auth.currentUser.uid,
                 name: displayName,
                 email: email,
                 role: role,
@@ -175,44 +195,127 @@ export default createStore({
         commit("NEW_USER", true);
       }
     },
+    getCourseInfo({ commit }) {
+      // console.log(store.state.user);
+      auth.onAuthStateChanged(async (user) => {
+        if (user) {
+          const q = query(
+            collection(db, "Courses"),
+            where("users", "array-contains", auth.currentUser.uid)
+          );
+          // const q = query(collection(db, 'Courses'))
+
+          onSnapshot(q, (querySnapshot) => {
+            let arr = [];
+            let usersArr = [];
+            querySnapshot.forEach((doc) => {
+              const obj = {
+                id: doc.id,
+                title: doc.data().title,
+              };
+              doc.data().users.forEach((user) => {
+                usersArr.push(user);
+              });
+              arr.push(obj);
+            });
+            commit("SET_COURSE", arr);
+            commit("SET_COURSE_USERS", usersArr);
+
+            // courseTitles.value = arr;
+            // console.log(courseTitles.value);
+          });
+        }
+      });
+    },
+    // async signUserInGoogle({ commit }, role) {
+    //   const provider = new GoogleAuthProvider();
+    //   if (!role) {
+    //     alert("New user, please select your role.");
+    //     router.push("/register");
+    //     console.log("error");
+    //   } else {
+    //     await signInWithPopup(auth, provider)
+    //       .then((result) => {
+    //         onSnapshot(doc(db, "Users", result.user.uid), (docSnap) => {
+    //           if (!docSnap.exists()) {
+    //             setDoc(doc(db, "Users", auth.currentUser.uid), {
+    //               name: auth.currentUser.displayName,
+    //               email: auth.currentUser.email,
+    //               photo: auth.currentUser.photoURL,
+    //               role: role,
+    //             }).then(() => {
+    //               commit("SET_USER", auth.currentUser);
+    //               router.push("/");
+    //               console.log("success, new user");
+    //             });
+    //           } else {
+    //             commit("SET_USER", auth.currentUser);
+    //             router.push("/");
+    //             console.log("successful, old user");
+    //           }
+    //         });
+    //       })
+    //       .catch((error) => {
+    //         switch (error.code) {
+    //           case "auth/account-exists-with-different-credential":
+    //             alert("User's email already exists.");
+    //             break;
+    //           case "auth/invalid-email":
+    //             alert("invalid email");
+    //         }
+    //       });
+    //   }
+    // },
     async signUserInGoogle({ commit }, role) {
       const provider = new GoogleAuthProvider();
-      if (!role) {
-        alert("New user, please select your role.");
-        router.push("/register");
-        console.log("error");
-      } else {
-        await signInWithPopup(auth, provider)
-          .then((result) => {
-            onSnapshot(doc(db, "Users", result.user.uid), (docSnap) => {
-              if (!docSnap.exists()) {
-                setDoc(doc(db, "Users", auth.currentUser.uid), {
-                  name: auth.currentUser.displayName,
-                  email: auth.currentUser.email,
-                  photo: auth.currentUser.photoURL,
-                  role: role,
-                }).then(() => {
-                  commit("SET_USER", auth.currentUser);
-                  router.push("/");
-                  console.log("success, new user");
-                });
-              } else {
-                commit("SET_USER", auth.currentUser);
-                router.push("/");
-                console.log("successful, old user");
-              }
+
+      await signInWithPopup(auth, provider)
+        .then((result) => {
+          const additionalUserInfo = getAdditionalUserInfo(result);
+          const isNewUser = additionalUserInfo.isNewUser;
+          if (isNewUser) {
+            alert("New User, please register and select your role!");
+            router.push("/register").then(() => {
+              onSnapshot(doc(db, "Users", result.user.uid), (docSnap) => {
+                if (!docSnap.exists()) {
+                  setDoc(doc(db, "Users", auth.currentUser.uid), {
+                    name: auth.currentUser.displayName,
+                    email: auth.currentUser.email,
+                    photo: auth.currentUser.photoURL,
+                    role: role,
+                  }).then(() => {
+                    commit("SET_USER", auth.currentUser);
+                    commit("SET_USER_ROLE", role);
+
+                    router.push("/");
+                    console.log("success, new user");
+                  });
+                } else {
+                  console.log("error");
+                }
+              });
             });
-          })
-          .catch((error) => {
-            switch (error.code) {
-              case "auth/account-exists-with-different-credential":
-                alert("User's email already exists.");
-                break;
-              case "auth/invalid-email":
-                alert("invalid email");
-            }
-          });
-      }
+            console.log("New user");
+          } else {
+            getDoc(doc(db, "Users", auth.currentUser.uid)).then((doc) => {
+              commit("SET_USER", auth.currentUser);
+              commit("SET_USER_ROLE", doc.data().role);
+              router.push("/");
+              console.log("successful, old user");
+            });
+            // commit("SET_USER", auth.currentUser);
+            // router.push("/");
+          }
+        })
+        .catch((error) => {
+          switch (error.code) {
+            case "auth/account-exists-with-different-credential":
+              alert("User's email already exists.");
+              break;
+            case "auth/invalid-email":
+              alert("invalid email");
+          }
+        });
     },
 
     fetchUser({ commit }) {
@@ -220,10 +323,17 @@ export default createStore({
         if (user === null) {
           commit("CLEAR_USER");
         } else {
-          commit("SET_USER", user);
-          if (router.isReady() && router.currentRoute.value.path === "/login") {
+          getDoc(doc(db, "Users", user.uid)).then((doc) => {
+            commit("SET_USER", user);
+            commit("SET_USER_ROLE", doc.data().role);
             router.push("/");
-          }
+            if (
+              router.isReady() &&
+              router.currentRoute.value.path === "/login"
+            ) {
+              router.push("/");
+            }
+          });
         }
         // console.log(user);
       });

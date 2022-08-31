@@ -28,15 +28,18 @@ const auth = getAuth(app);
 
 const db = getFirestore(app);
 const storage = getStorage(app);
-const profilePicture = (name) => {
-  return ref(storage, "profile/" + name);
+const profilePicture = (name, id) => {
+  return ref(storage, "profile/" + id + "/" + name);
 };
 
 const coursePictureStrg = (name) => {
   return ref(storage, "courseSpan/" + name);
 };
-const coursePostFiles = (name) => {
-  return ref(storage, "coursePost/" + name);
+const courseMaterials = (name) => {
+  return ref(storage, "courseMaterials/" + name);
+};
+const coursePostFiles = (name, course) => {
+  return ref(storage, course + "/" + "coursePost/" + name);
 };
 
 const coursesCollection = collection(db, "Courses");
@@ -65,4 +68,5 @@ export {
   usersCollection,
   quizzesCollection,
   coursePostFiles,
+  courseMaterials,
 };

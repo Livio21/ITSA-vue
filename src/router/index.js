@@ -72,7 +72,16 @@ const routes = [
       teacherOnly: true,
     },
   },
-
+  {
+    path: "/register-course",
+    name: "register-course",
+    component: () => import("../views/Courses/RegisterCourseView.vue"),
+    meta: {
+      requiresAuth: true,
+      requiresVer: true,
+      teacherOnly: true,
+    },
+  },
   {
     path: "/my-profile",
     name: "Profile",
@@ -131,6 +140,7 @@ router.beforeEach((to, from, next) => {
     next("/verify");
     return;
   }
+  
   next();
 });
 export default router;

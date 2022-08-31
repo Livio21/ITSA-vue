@@ -30,13 +30,19 @@
           <label for="password">Current Password: </label>
           <input type="password" name="password" placeholder="*********"
             class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
-            v-model="cpassword[0]" required>
+            v-model="cpassword[0]" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+            title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"
+            required>
+
         </div>
         <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center" v-if="edit">
           <label for="cpassword">New Password: </label>
           <input type="password" name="cpassword" placeholder="*********"
             class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
-            v-model="cpassword[1]" required>
+            v-model="cpassword[1]" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+            title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"
+            required>
+
         </div>
       </div>
       <div class="flex flex-col md:flex-row  gap-5 justify-center md:justify-end">
@@ -77,6 +83,7 @@ export default {
   setup() {
     const store = useStore();
     const userData = store.state.user;
+    console.log();
     const fullName = ref({})
 
     const userDetails = ref({});
@@ -104,18 +111,18 @@ export default {
     let dropzoneFile = ref({})
     const drop = (e) => {
       dropzoneFile.value = e.dataTransfer.files[0]
-      handleFileUpload()
+      handleFileUpload(userData.uid)
     }
     const selectedFile = () => {
       dropzoneFile.value = document.querySelector(".dropzoneFile").files[0]
-      handleFileUpload()
+      handleFileUpload(userData.uid)
     }
 
-    const handleFileUpload = async () => {
-      if (dropzoneFile.value) {
+    const handleFileUpload = async (id) => {
+      if (dropzoneFile.value && id) {
         isUploaded.value = false
-        await uploadBytes(profilePicture(dropzoneFile.value.name), dropzoneFile.value).then(() => {
-          getDownloadURL(profilePicture(dropzoneFile.value.name)).then((url) => {
+        await uploadBytes(profilePicture(dropzoneFile.value.name, id), dropzoneFile.value).then(() => {
+          getDownloadURL(profilePicture(dropzoneFile.value.name, id)).then((url) => {
             userDetails.value.photoURL = url
             pfpUrl.value = url
             isUploaded.value = true

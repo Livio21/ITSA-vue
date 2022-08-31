@@ -33,7 +33,7 @@
                 </div>
                 <h1
                   class="text-black hover:border-b-2 cursor-pointer hover:border-black hover:scale-105 active:scale-100 hidden sm:block">
-                  {{ userData.displayName }}
+                  {{  userData.displayName  }}
                 </h1>
               </div>
               <button @click="$store.dispatch('logout')"
@@ -47,12 +47,14 @@
       </div>
     </div>
   </div>
+
 </template>
 <script>
 import { onBeforeMount, onMounted } from "vue";
 import { mapMutations, mapState, useStore } from "vuex";
 import router from "@/router";
 import { computed } from "@vue/reactivity";
+
 export default {
   name: "HomeView",
   components: {},

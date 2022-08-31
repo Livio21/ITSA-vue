@@ -15,7 +15,7 @@
   <FooterComponent></FooterComponent>
 </template>
 <script>
-import { onBeforeMount } from "vue";
+import { onBeforeMount, onMounted } from "vue";
 import navBar from "@/components/Navigation/navBar.vue";
 
 import FooterComponent from "@/components/footerComponent.vue";
@@ -35,6 +35,9 @@ export default {
       store.dispatch("fetchUser");
 
     });
+    // console.log(store.state.user);
+    onMounted(() => {
+    })
   },
   computed: {
     ...mapState(["showNav"]),
@@ -61,6 +64,4 @@ export default {
 .fade-leave-to {
   opacity: 0;
 }
-
-
 </style>

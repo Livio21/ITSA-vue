@@ -39,8 +39,8 @@
                                         required />
                                 </div>
                                 <label for="roles" class="text-sm font-bold">Roles:</label>
-                                <div class=" md:flex self-center basis-1/2" :class="{ 'animate-pulse ring ring-red-500 rounded': !focus }"
-                                    id="roles">
+                                <div class=" md:flex self-center basis-1/2"
+                                    :class="{ 'animate-pulse ring ring-red-500 rounded': !focus }" id="roles">
                                     <ul
                                         class="items-center text-center w-full h-1/2 text-sm font-medium text-gray-900 bg-white rounded-lg border border-gray-200 sm:flex ">
                                         <li
@@ -76,7 +76,9 @@
                                     <input
                                         class="w-full px-3 py-3 mb-3 text-sm leading-tight text-gray-700 border  rounded-full shadow appearance-none focus:outline-none focus:shadow-outline"
                                         :class="{}" id="password" type="password" placeholder="******************"
-                                        v-model="registerPlaceholder.password.password" required />
+                                        v-model="registerPlaceholder.password.password" required
+                                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                        title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters" />
 
                                 </div>
                                 <div class="md:ml-2">
@@ -87,6 +89,8 @@
                                         class="w-full px-3 py-3 mb-3 text-sm leading-tight text-gray-700 border rounded-full shadow appearance-none focus:outline-none focus:shadow-outline "
                                         id="c_password" type="password" placeholder="******************"
                                         :class="{ 'ring ring-red-500': test }"
+                                        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+                                        title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"
                                         v-model="registerPlaceholder.password.confirm" />
                                 </div>
                             </div>
