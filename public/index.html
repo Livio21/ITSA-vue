@@ -1,17 +1,50 @@
 <!DOCTYPE html>
 <html lang="">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
     <title><%= htmlWebpackPlugin.options.title %></title>
   </head>
   <body>
     <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      <strong
+        >We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work
+        properly without JavaScript enabled. Please enable it to
+        continue.</strong
+      >
     </noscript>
     <div id="app"></div>
     <!-- built files will be auto injected -->
   </body>
 </html>
+<style>
+  #app::-webkit-scrollbar {
+    width: 0.6vw;
+    border-bottom: 5px solid rgba(255, 255, 255, 0);
+  }
+
+  #app::-webkit-scrollbar-thumb {
+    box-shadow: inset 0 0 10px 10px rgb(211, 211, 211);
+    border-radius: 10px;
+    border: solid 3px transparent;
+  }
+
+  #app::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 10px 10px rgba(255, 255, 255, 0);
+    border: solid 3px transparent;
+  }
+
+  #app::-webkit-scrollbar-button {
+    background-color: rgba(240, 248, 255, 0);
+  }
+
+  #app::-webkit-scrollbar-thumb:hover {
+    background: rgb(219, 219, 219);
+  }
+
+  #app::-webkit-scrollbar-thumb:active {
+    background: rgb(192, 192, 192);
+  }
+</style>

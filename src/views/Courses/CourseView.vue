@@ -4,7 +4,7 @@
     <div
       class="flex justify-center items-end bg-slate-500 h-[200px] w-full  rounded-tr-3xl rounded-tl-3xl shadow-inner p-3 bg-cover "
       id="b">
-      <span class=" text-4xl  font-semibold " id="title">{{  course.title  }}</span>
+      <span class=" text-6xl  font-semibold " id="title">{{  course.title  }}</span>
     </div>
     <div class="border-b-2">
       <nav class="self-center text-slate-700 ">

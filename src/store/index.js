@@ -35,6 +35,7 @@ export default createStore({
     showNav: false,
     course: null,
     isNew: null,
+    currentQuiz: null,
   },
   getters: {},
   mutations: {
@@ -61,6 +62,9 @@ export default createStore({
     },
     NEW_USER(state, payload) {
       state.isNew = payload;
+    },
+    SET_QUIZ(state, payload) {
+      state.currentQuiz = payload;
     },
   },
   actions: {

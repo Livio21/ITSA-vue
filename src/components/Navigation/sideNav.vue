@@ -21,7 +21,26 @@
             Edit Profile
           </router-link>
         </div>
+        <div class="quizNavigation flex flex-col text-base font-medium gap-3 p-2">
+          <router-link
+            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+            :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/view-quizzes">View Quizzes
+          </router-link>
+          <router-link
+            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+            :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/create-quizzes">Create Quizzes
+          </router-link>
+          <router-link
+            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+            :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/quiz">Quiz
+          </router-link>
+        </div>
         <div class="courseNavigation flex flex-col text-base font-medium gap-3 p-2">
+
+          <router-link
+            class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
+            :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/register-course">Register to Course
+          </router-link>
           <router-link
             class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
             :class="{ ' cursor-not-allowed': !store.state.user.emailVerified }" to="/create-course">Create Course
@@ -36,7 +55,7 @@
           <button v-for="(courseTitle, index) in store.state.courseTitle" :key="index"
             class="hover:bg-slate-200 active:hover:bg-blue-200 active:bg-blue-300 focus:ring focus:ring-black focus:bg-blue-300 rounded-2xl px-4 p-3"
             @click="viewCourse(courseTitle.title, courseTitle.id)" :title="courseTitle.title">{{
-             courseTitle.title 
+                courseTitle.title
             }}</button>
         </div>
       </div>
@@ -53,8 +72,6 @@
 <script>
 
 import { useStore, mapState } from "vuex";
-// import { db } from "@/firebase";
-// import { collection, onSnapshot, query, where } from "@firebase/firestore";
 import { onBeforeMount, onMounted, ref } from "vue";
 import router from "@/router";
 
@@ -62,29 +79,6 @@ export default {
   setup() {
     const store = useStore();
     const courseTitles = ref([])
-
-    // console.log(getUser());
-    // const getCourseTitle = () => {
-    //   if (store.state.user) {
-    //     // console.log(store.state.user);
-    //     const q = query(collection(db, 'Courses'), where('users', "array-contains", store.state.user.uid))
-    //     // const q = query(collection(db, 'Courses'))
-
-    //     onSnapshot(q, (querySnapshot) => {
-    //       let arr = []
-    //       querySnapshot.forEach((doc) => {
-    //         const obj = {
-    //           id: doc.id,
-    //           title: doc.data().title,
-    //         }
-    //         arr.push(obj)
-    //       })
-    //       courseTitles.value = arr
-    //       console.log(courseTitles.value);
-    //     })
-    //   }
-    // }
-    // getCourseTitle() 
     onBeforeMount(() => {
     })
     onMounted(() => {

@@ -6,7 +6,7 @@
       <div class="p-10 basis-full">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
-            <component :is="Component" :key="$route.path" class="main" />
+            <component :is="Component" :key="$route.path" />
           </transition>
         </router-view>
       </div>

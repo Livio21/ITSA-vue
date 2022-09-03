@@ -1,6 +1,19 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import { auth } from "../firebase";
+import VerifiedView from "../views/User/VerifiedView.vue";
+import About from "../views/AboutView.vue";
+import CourseView from "../views/Courses/CourseView.vue";
+import Quizzes from "../views/Quizz/ViewQuizzes.vue";
+import CreateQuizzes from "../views/Quizz/CreateQuizzes.vue";
+import Quiz from "../views/Quizz/QuizView.vue";
+import CreateCourseView from "../views/Courses/CreateCourseView.vue";
+import RegisterCourseView from "../views/Courses/RegisterCourseView.vue";
+import ProfileView from "../views/User/ProfileView.vue";
+import EditProfile from "../views/User/EditProfile.vue";
+import RegisterView from "../views/Auth/RegisterView.vue";
+import LoginView from "../views/Auth/LoginView.vue";
+import ResetPass from "../views/Auth/ResetPass.vue";
 
 const routes = [
   {
@@ -12,8 +25,7 @@ const routes = [
   {
     path: "/verify",
     name: "verify",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/User/VerifiedView.vue"),
+    component: VerifiedView,
     meta: {
       requiresAuth: true,
       requiresVer: false,
@@ -22,22 +34,13 @@ const routes = [
   {
     path: "/about",
     name: "about",
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    component: About,
     meta: {},
-  },
-  {
-    path: "/test",
-    name: "test",
-    component: () => import("../views/Testing/TestingView.vue"),
-    meta: {
-      requiresAuth: true,
-    },
   },
   {
     path: "/courses/:courseName/:courseID",
     name: "courses",
-    component: () => import("../views/Courses/CourseView.vue"),
+    component: CourseView,
     props: true,
     meta: {
       requiresAuth: true,
@@ -45,27 +48,37 @@ const routes = [
     },
   },
   {
-    path: "/quizzes",
-    name: "quiz",
-    component: () => import("../views/Quizz/CreateQuizzes.vue"),
+    path: "/create-quizzes",
+    name: "create-quiz",
+    component: CreateQuizzes,
     meta: {
       requiresAuth: true,
       requiresVer: true,
     },
   },
-  // {
-  //   path: "/Courses/:courseName/Tools/:toolName",
-  //   name: "courses",
-  //   component: () => import("../views/Courses/CourseView.vue"),
-  //   props: true,
-  //   meta: {
-  //     requiresAuth: true,
-  //   },
-  // },
+  {
+    path: "/quiz/:quizTitle",
+    name: "quiz",
+    component: Quiz,
+    props: true,
+    meta: {
+      requiresAuth: true,
+      requiresVer: true,
+    },
+  },
+  {
+    path: "/view-quizzes",
+    name: "view-quiz",
+    component: Quizzes,
+    meta: {
+      requiresAuth: true,
+      requiresVer: true,
+    },
+  },
   {
     path: "/create-course",
     name: "createCourse",
-    component: () => import("../views/Courses/CreateCourseView.vue"),
+    component: CreateCourseView,
     meta: {
       requiresAuth: true,
       requiresVer: true,
@@ -75,17 +88,16 @@ const routes = [
   {
     path: "/register-course",
     name: "register-course",
-    component: () => import("../views/Courses/RegisterCourseView.vue"),
+    component: RegisterCourseView,
     meta: {
       requiresAuth: true,
       requiresVer: true,
-      teacherOnly: true,
     },
   },
   {
     path: "/my-profile",
     name: "Profile",
-    component: () => import("../views/User/ProfileView.vue"),
+    component: ProfileView,
     meta: {
       requiresAuth: true,
     },
@@ -93,7 +105,7 @@ const routes = [
   {
     path: "/edit-profile",
     name: "EditProfile",
-    component: () => import("../views/User/EditProfile.vue"),
+    component: EditProfile,
     meta: {
       requiresAuth: true,
       requiresVer: true,
@@ -102,17 +114,17 @@ const routes = [
   {
     path: "/register",
     name: "register",
-    component: () => import("../views/Auth/RegisterView.vue"),
+    component: RegisterView,
   },
   {
     path: "/login",
     name: "login",
-    component: () => import("../views/Auth/LoginView.vue"),
+    component: LoginView,
   },
   {
     path: "/forgot-password",
     name: "Reset Pass",
-    component: () => import("../views/Auth/ResetPass.vue"),
+    component: ResetPass,
   },
 ];
 
@@ -140,7 +152,7 @@ router.beforeEach((to, from, next) => {
     next("/verify");
     return;
   }
-  
+
   next();
 });
 export default router;
