@@ -11,7 +11,7 @@
                     add
                 </span>
             </button>
-            <div class="flex   overflow-hidden  overflow-x-scroll  gap-4 bg-white p-5 rounded-3xl snap-x"
+            <div class="flex w-full  overflow-hidden  overflow-x-scroll  gap-4 bg-white p-5 rounded-3xl snap-x"
                 id="container">
                 <div class="basis-[200px] min-h-[200px] bg-gray-100 rounded-3xl p-5 pb-6 flex flex-col items-center justify-between relative flex-shrink-0 snap-center"
                     id="quiz" v-for="(quiz, index) in quizzesData" :key="index">
@@ -22,8 +22,8 @@
                     <div class="flex flex-col text-slate-700">
                         <span>Score {{ quiz.points + "/" + quiz.maxpoints }}</span>
                         <span :class="quiz.completed ? 'text-green-500' : 'text-red-500'">{{ quiz.completed ?
-                                'Completed' :
-                                'Not completed'
+                        'Completed' :
+                        'Not completed'
                         }}</span>
 
                     </div>
@@ -49,11 +49,13 @@
                     <input type="text"
                         class=" p-3 rounded-2xl shadow-inner ring-2 ring-slate-300 text-center font-semibold text-gray-700"
                         placeholder="Ex. abc123" v-model="quizCode">
-                    <button @click="openQuiz(quizCode)"
+                    <button @click="openQuiz(quizCode)" type="button"
                         class=" mt-10 w-[150px] h-[50px] bg-blue-600 drop-shadow-lg text-xl rounded-full font-semibold text-white hover:brightness-110 active:bg-blue-700 active:scale-95">Start</button>
                 </div>
             </div>
         </transition>
+        <course-container></course-container>
+        <quiz-container></quiz-container>
     </div>
 </template>
 
@@ -64,6 +66,8 @@ import router from '@/router';
 import { arrayUnion, collection, doc, onSnapshot, query, setDoc, updateDoc, where } from '@firebase/firestore';
 import { ref } from 'vue'
 import { useStore } from 'vuex';
+import QuizContainer from '@/components/Quizz/QuizContainer.vue';
+import CourseContainer from '@/components/Course/CourseContainer.vue';
 const addQuiz = ref(false)
 const store = useStore()
 const quizzesData = ref([{}])

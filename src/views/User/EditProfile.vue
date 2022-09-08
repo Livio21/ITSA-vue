@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <form action="" class="mx-auto flex flex-col max-w-fit gap-10  bg-slate-200 p-10 sm:rounded-2xl shadow-lg"
+  <div class="w-full h-full text-slate-700">
+    <form action="" class="mx-auto flex flex-col max-w-fit gap-10  bg-slate-100 p-10 sm:rounded-2xl shadow-lg"
       @submit.prevent="updateUser">
       <div class="max-w-fit self-center">
 
@@ -9,37 +9,33 @@
       <div class="flex flex-col md:flex-row gap-3 ">
         <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center">
           <label for="firstname">First Name: </label>
-          <input type="text" name="firstname" :placeholder="userName[0]"
-            class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!edit"
-            v-model="fullName.firstName">
+          <input type="text" name="firstname" :placeholder="userName[0]" class="ml-3 p-3 rounded-full  text-center"
+            :disabled="!edit" v-model="fullName.firstName">
         </div>
         <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center">
           <label for="lastname">Last Name: </label>
-          <input type="text" name="lastname" :placeholder="userName[1]"
-            class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!edit" v-model="fullName.lastName">
+          <input type="text" name="lastname" :placeholder="userName[1]" class="ml-3 p-3 rounded-full  text-center"
+            :disabled="!edit" v-model="fullName.lastName">
         </div>
       </div>
       <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center">
         <label for="email" class="">Email: </label>
-        <input type="email" name="email" :placeholder="userData.email"
-          class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
-          v-model="userDetails.email" required>
+        <input type="email" name="email" :placeholder="userData.email" class="ml-3 p-3 rounded-full  text-center"
+          :disabled="!updateEmailandPass" v-model="userDetails.email" required>
       </div>
       <div class="flex  flex-col md:flex-row gap-3">
         <div class="w-[350px] flex flex-col md:flex-row justify-between items-center">
           <label for="password">Current Password: </label>
-          <input type="password" name="password" placeholder="*********"
-            class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
-            v-model="cpassword[0]" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+          <input type="password" name="password" placeholder="*********" class="ml-3 p-3 rounded-full  text-center"
+            :disabled="!updateEmailandPass" v-model="cpassword[0]" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
             title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"
             required>
 
         </div>
         <div class=" w-[350px] flex flex-col md:flex-row justify-between items-center" v-if="edit">
           <label for="cpassword">New Password: </label>
-          <input type="password" name="cpassword" placeholder="*********"
-            class="ml-3 p-3 rounded-full ring ring-slate-100 text-center" :disabled="!updateEmailandPass"
-            v-model="cpassword[1]" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+          <input type="password" name="cpassword" placeholder="*********" class="ml-3 p-3 rounded-full  text-center"
+            :disabled="!updateEmailandPass" v-model="cpassword[1]" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
             title="Must contain at least one  number and one uppercase and lowercase letter, and at least 8 or more characters"
             required>
 
@@ -47,7 +43,8 @@
       </div>
       <div class="flex flex-col md:flex-row  gap-5 justify-center md:justify-end">
         <div v-if="edit" class="inline p-3">
-          <label for="default-toggle" class="inline-flex relative items-center cursor-pointer">
+          <label for="default-toggle" class="inline-flex relative items-center cursor-pointer"
+            style="font-size:medium;">
             <input type="checkbox" value="" id="default-toggle" class="sr-only peer" v-model="updateEmailandPass">
             <div
               class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600">
@@ -210,5 +207,10 @@ export default {
     padding: 10px;
     border-radius: 5px;
   }
+}
+
+label {
+  font-weight: 600;
+  font-size: large;
 }
 </style>

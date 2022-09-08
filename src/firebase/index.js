@@ -1,6 +1,8 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 
+import { getMessaging } from "firebase/messaging";
+
 import { getAuth } from "firebase/auth";
 
 import { getStorage, ref } from "firebase/storage";
@@ -22,8 +24,10 @@ const firebaseConfig = {
   measurementId: "G-41GM1YW839",
 };
 
+
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
 const auth = getAuth(app);
 
 const db = getFirestore(app);
@@ -69,4 +73,5 @@ export {
   quizzesCollection,
   coursePostFiles,
   courseMaterials,
+  messaging,
 };

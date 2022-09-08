@@ -1,5 +1,5 @@
 <template>
-  <div class=" w-full sticky top-0 max-h-fit overflow-auto z-20 bg-slate-100" id="navbar">
+  <div class=" w-full sticky top-0 max-h-fit overflow-auto z-20 bg-gray-100" id="navbar">
     <div class="">
       <div class="">
         <nav class="grid grid-flow-col py-3 mx-auto text-white">

@@ -1,31 +1,14 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 import { auth } from "../firebase";
-import VerifiedView from "../views/User/VerifiedView.vue";
-import About from "../views/AboutView.vue";
-import CourseView from "../views/Courses/CourseView.vue";
-import Quizzes from "../views/Quizz/ViewQuizzes.vue";
-import CreateQuizzes from "../views/Quizz/CreateQuizzes.vue";
-import Quiz from "../views/Quizz/QuizView.vue";
-import CreateCourseView from "../views/Courses/CreateCourseView.vue";
-import RegisterCourseView from "../views/Courses/RegisterCourseView.vue";
-import ProfileView from "../views/User/ProfileView.vue";
-import EditProfile from "../views/User/EditProfile.vue";
-import RegisterView from "../views/Auth/RegisterView.vue";
-import LoginView from "../views/Auth/LoginView.vue";
-import ResetPass from "../views/Auth/ResetPass.vue";
+import store from "@/store";
 
 const routes = [
-  {
-    path: "/",
-    name: "home",
-    component: HomeView,
-    meta: {},
-  },
+  
   {
     path: "/verify",
     name: "verify",
-    component: VerifiedView,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/User/VerifiedView.vue"),
     meta: {
       requiresAuth: true,
       requiresVer: false,
@@ -34,13 +17,14 @@ const routes = [
   {
     path: "/about",
     name: "about",
-    component: About,
+    component: () =>
+      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
     meta: {},
   },
   {
     path: "/courses/:courseName/:courseID",
     name: "courses",
-    component: CourseView,
+    component: () => import("../views/Courses/CourseView.vue"),
     props: true,
     meta: {
       requiresAuth: true,
@@ -50,26 +34,18 @@ const routes = [
   {
     path: "/create-quizzes",
     name: "create-quiz",
-    component: CreateQuizzes,
+    component: () => import("../views/Quizz/CreateQuizzes.vue"),
     meta: {
       requiresAuth: true,
       requiresVer: true,
+      teacherOnly: true,
     },
   },
   {
-    path: "/quiz/:quizTitle",
+    path: "/quiz/:quizId",
     name: "quiz",
-    component: Quiz,
     props: true,
-    meta: {
-      requiresAuth: true,
-      requiresVer: true,
-    },
-  },
-  {
-    path: "/view-quizzes",
-    name: "view-quiz",
-    component: Quizzes,
+    component: () => import("../views/Quizz/QuizView.vue"),
     meta: {
       requiresAuth: true,
       requiresVer: true,
@@ -78,7 +54,7 @@ const routes = [
   {
     path: "/create-course",
     name: "createCourse",
-    component: CreateCourseView,
+    component: () => import("../views/Courses/CreateCourseView.vue"),
     meta: {
       requiresAuth: true,
       requiresVer: true,
@@ -88,7 +64,7 @@ const routes = [
   {
     path: "/register-course",
     name: "register-course",
-    component: RegisterCourseView,
+    component: () => import("../views/Courses/RegisterCourseView.vue"),
     meta: {
       requiresAuth: true,
       requiresVer: true,
@@ -97,7 +73,7 @@ const routes = [
   {
     path: "/my-profile",
     name: "Profile",
-    component: ProfileView,
+    component: () => import("../views/User/ProfileView.vue"),
     meta: {
       requiresAuth: true,
     },
@@ -105,7 +81,25 @@ const routes = [
   {
     path: "/edit-profile",
     name: "EditProfile",
-    component: EditProfile,
+    component: () => import("../views/User/EditProfile.vue"),
+    meta: {
+      requiresAuth: true,
+      requiresVer: true,
+    },
+  },
+  {
+    path: "/student-dashboard",
+    name: "Dashboard",
+    component: () => import("../views/Dashboard/StudentDashboard.vue"),
+    meta: {
+      requiresAuth: true,
+      requiresVer: true,
+    },
+  },
+  {
+    path: "/teacher-dashboard",
+    name: "TeacherDashboard",
+    component: () => import("../views/Dashboard/TeacherDashboard.vue"),
     meta: {
       requiresAuth: true,
       requiresVer: true,
@@ -114,17 +108,17 @@ const routes = [
   {
     path: "/register",
     name: "register",
-    component: RegisterView,
+    component: () => import("../views/Auth/RegisterView.vue"),
   },
   {
     path: "/login",
     name: "login",
-    component: LoginView,
+    component: () => import("../views/Auth/LoginView.vue"),
   },
   {
     path: "/forgot-password",
     name: "Reset Pass",
-    component: ResetPass,
+    component: () => import("../views/Auth/ResetPass.vue"),
   },
 ];
 
@@ -134,7 +128,11 @@ const router = createRouter({
 });
 router.beforeEach((to, from, next) => {
   if (to.path === "/login" && auth.currentUser) {
-    next("/");
+    router.push(store.state.user.role == 'Student' ? '/student-dashboard':'/teacher-dashboard');
+    return;
+  }
+  if (to.path === "/" && auth.currentUser) {
+    router.push(store.state.user.role == 'Student' ? '/student-dashboard':'/teacher-dashboard');
     return;
   }
   if (
@@ -150,6 +148,13 @@ router.beforeEach((to, from, next) => {
     !auth.currentUser.emailVerified
   ) {
     next("/verify");
+    return;
+  }
+  if (
+    to.matched.some((record) => record.meta.teacherOnly) &&
+    store.state.user.role == "Student"
+  ) {
+    next("/my-profile");
     return;
   }
 

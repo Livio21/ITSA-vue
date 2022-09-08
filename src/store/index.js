@@ -23,15 +23,15 @@ import {
   query,
   where,
   collection,
+  updateDoc
 } from "firebase/firestore";
 
 // import { onSnapshot } from "firebase/firestore";
 
 export default createStore({
   state: {
-    user: null,
+    user: {},
     courseTitle: null,
-    courseUsers: null,
     showNav: false,
     course: null,
     isNew: null,
@@ -50,9 +50,6 @@ export default createStore({
     },
     SET_COURSE(state, payload) {
       state.courseTitle = payload;
-    },
-    SET_COURSE_USERS(state, payload) {
-      state.courseUsers = payload;
     },
     SHOW_NAV(state) {
       state.showNav = !state.showNav;
@@ -73,7 +70,7 @@ export default createStore({
       if (displayName != undefined) {
         await updateProfile(auth.currentUser, profile)
           .then(() => {
-            setDoc(doc(db, "Users", auth.currentUser.uid), {
+            updateDoc(doc(db, "Users", auth.currentUser.uid), {
               displayName: displayName,
               photoURL: photoURL,
             });
@@ -128,11 +125,13 @@ export default createStore({
       const { email, password } = details;
 
       await signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          getDoc(doc(db, "Users", auth.currentUser.uid)).then((doc) => {
+        .then(async () => {
+          await getDoc(doc(db, "Users", auth.currentUser.uid)).then((doc) => {
+            let role = doc.data().role;
             commit("SET_USER", auth.currentUser);
-            commit("SET_USER_ROLE", doc.data().role);
-            router.push("/");
+            commit("SET_USER_ROLE", role);
+            
+            router.push(role == 'Student' ? '/student-dashboard':'/teacher-dashboard');
           });
         })
         .catch((error) => {
@@ -158,22 +157,23 @@ export default createStore({
 
       await createUserWithEmailAndPassword(auth, email, password)
         .then(async (usercred) => {
+          commit("SET_USER", auth.currentUser);
           await sendEmailVerification(usercred.user)
             .then(() => {
-              commit("SET_USER", auth.currentUser).then(() => {
-                commit("SET_USER_ROLE", role);
-              });
-              router.push("/verify");
               updateProfile(auth.currentUser, {
                 displayName: displayName,
                 photoURL: "https://freesvg.org/img/abstract-user-flat-4.png",
-              });
-              setDoc(doc(db, "Users", auth.currentUser.uid), {
-                id: auth.currentUser.uid,
-                name: displayName,
-                email: email,
-                role: role,
-                photoURL: "https://freesvg.org/img/abstract-user-flat-4.png",
+              }).then(() => {
+                setDoc(doc(db, "Users", auth.currentUser.uid), {
+                  id: auth.currentUser.uid,
+                  name: displayName,
+                  email: email,
+                  role: role,
+                  photo: "https://freesvg.org/img/abstract-user-flat-4.png",
+                }).then(() => {
+                  commit("SET_USER_ROLE", role);
+                  router.push("/verify");
+                });
               });
             })
             .catch((error) => {
@@ -200,7 +200,6 @@ export default createStore({
       }
     },
     getCourseInfo({ commit }) {
-      // console.log(store.state.user);
       auth.onAuthStateChanged(async (user) => {
         if (user) {
           const q = query(
@@ -208,73 +207,27 @@ export default createStore({
             where("users", "array-contains", auth.currentUser.uid)
           );
           // const q = query(collection(db, 'Courses'))
-
           onSnapshot(q, (querySnapshot) => {
             let arr = [];
-            let usersArr = [];
             querySnapshot.forEach((doc) => {
               const obj = {
                 id: doc.id,
                 title: doc.data().title,
               };
-              doc.data().users.forEach((user) => {
-                usersArr.push(user);
-              });
               arr.push(obj);
             });
             commit("SET_COURSE", arr);
-            commit("SET_COURSE_USERS", usersArr);
-
-            // courseTitles.value = arr;
-            // console.log(courseTitles.value);
+            // c
           });
         }
       });
     },
-    // async signUserInGoogle({ commit }, role) {
-    //   const provider = new GoogleAuthProvider();
-    //   if (!role) {
-    //     alert("New user, please select your role.");
-    //     router.push("/register");
-    //     console.log("error");
-    //   } else {
-    //     await signInWithPopup(auth, provider)
-    //       .then((result) => {
-    //         onSnapshot(doc(db, "Users", result.user.uid), (docSnap) => {
-    //           if (!docSnap.exists()) {
-    //             setDoc(doc(db, "Users", auth.currentUser.uid), {
-    //               name: auth.currentUser.displayName,
-    //               email: auth.currentUser.email,
-    //               photo: auth.currentUser.photoURL,
-    //               role: role,
-    //             }).then(() => {
-    //               commit("SET_USER", auth.currentUser);
-    //               router.push("/");
-    //               console.log("success, new user");
-    //             });
-    //           } else {
-    //             commit("SET_USER", auth.currentUser);
-    //             router.push("/");
-    //             console.log("successful, old user");
-    //           }
-    //         });
-    //       })
-    //       .catch((error) => {
-    //         switch (error.code) {
-    //           case "auth/account-exists-with-different-credential":
-    //             alert("User's email already exists.");
-    //             break;
-    //           case "auth/invalid-email":
-    //             alert("invalid email");
-    //         }
-    //       });
-    //   }
-    // },
+
     async signUserInGoogle({ commit }, role) {
       const provider = new GoogleAuthProvider();
 
       await signInWithPopup(auth, provider)
-        .then((result) => {
+        .then(async (result) => {
           const additionalUserInfo = getAdditionalUserInfo(result);
           const isNewUser = additionalUserInfo.isNewUser;
           if (isNewUser) {
@@ -290,8 +243,7 @@ export default createStore({
                   }).then(() => {
                     commit("SET_USER", auth.currentUser);
                     commit("SET_USER_ROLE", role);
-
-                    router.push("/");
+                    router.push(role == 'Student' ? '/student-dashboard':'/teacher-dashboard');
                     console.log("success, new user");
                   });
                 } else {
@@ -301,10 +253,10 @@ export default createStore({
             });
             console.log("New user");
           } else {
-            getDoc(doc(db, "Users", auth.currentUser.uid)).then((doc) => {
+            await getDoc(doc(db, "Users", auth.currentUser.uid)).then((doc) => {
               commit("SET_USER", auth.currentUser);
               commit("SET_USER_ROLE", doc.data().role);
-              router.push("/");
+              router.push(role == 'Student' ? '/student-dashboard':'/teacher-dashboard');
               console.log("successful, old user");
             });
             // commit("SET_USER", auth.currentUser);
@@ -328,14 +280,16 @@ export default createStore({
           commit("CLEAR_USER");
         } else {
           getDoc(doc(db, "Users", user.uid)).then((doc) => {
-            commit("SET_USER", user);
+            console.log(doc.data().role);
+
             commit("SET_USER_ROLE", doc.data().role);
+            commit("SET_USER", user);
             router.push("/");
             if (
               router.isReady() &&
               router.currentRoute.value.path === "/login"
             ) {
-              router.push("/");
+              router.push(doc.data().role == 'Student' ? '/student-dashboard':'/teacher-dashboard');
             }
           });
         }
