@@ -1,9 +1,10 @@
 <template>
-    <div class="max-w-7xl bg-slate-100 rounded-3xl mx-auto p-10 flex flex-wrap gap-4 ">
-        <div class=" max-w-7xl bg-slate-100 rounded-3xl  p-10 flex gap-4 ">
+    <div
+        class="max-w-7xl w-screen bg-slate-100 lg:rounded-3xl lg:mx-auto py-4 lg:p-10 flex flex-wrap gap-4 justify-center lg:justify-start">
+        <div class=" max-w-7xl bg-slate-100 rounded-3xl  flex flex-col lg:flex-row items-center   gap-4 ">
             <div class="w-[250px]">
-                <span class="text-6xl text-slate-700 font-semibold">Notes</span><br>
-                <span class="text-lg text-slate-700 font-semibold">Notes and to-dos</span>
+                <span class="text-2xl md:text-6xl text-slate-700 font-semibold">Notes</span><br>
+                <span class="md:text-lg text-slate-700 font-semibold">Notes and to-dos</span>
             </div>
             <button @click="toggleNoteCreate(); showNote = false"
                 class="material-symbols-outlined flex-shrink-0 self-center -rotate-90 bg-white h-[50px] w-[50px] rounded-full font-bold text-lg shadow-md hover:bg-gray-100 active:scale-95 active:shadow-none">
@@ -11,7 +12,8 @@
                     expand_more
                 </span></button>
             <transition name="slide-fade">
-                <div v-show="showNoteCreate" class="flex gap-5 items-center" v-click-outside="toggleShowNote">
+                <div v-show="showNoteCreate" class="flex flex-col lg:flex-row gap-5 items-center"
+                    v-click-outside="toggleShowNote">
                     <span v-if="errorMsg" class="text-red-500 text-sm italic">{{errorMsg}}</span>
                     <div class="grid flex-shrink-0 relative">
                         <input type="text" id="todotitle" @focus="showNote = true"
@@ -40,13 +42,13 @@
             </transition>
         </div>
         <div v-if="notes"
-            class="w-full bg-white shadow-inner rounded-2xl overflow-x-scroll p-5 flex gap-3 text-slate-700"
+            class="w-full bg-white shadow-inner lg:rounded-2xl overflow-x-scroll p-2 lg:p-5 flex gap-3 text-slate-700"
             id="container">
             <transition-group name="slide-fade">
                 <div v-for="(note,index) in notes" :key="index"
                     :class="{'ring ring-red-500' : note.finished,'order-last bg-gray-50':note.checked }"
                     :title="'Till '+note.deadline.toDate()"
-                    class="p-3 rounded-2xl ring-1 ring-slate-200  w-[300px] flex-shrink-0 relative transition-all h-fit">
+                    class="p-3 rounded-2xl ring-1 ring-slate-200  lg:w-[300px] flex-shrink-0 relative transition-all h-fit">
                     <div class="flex  justify-between items-center gap-3 p-1" :class="{'border-b':note.expandNote}">
                         <button @click="checkToggle(note)"
                             class="material-symbols-outlined p-1 shrink-0 rounded-full hover:bg-slate-100 active:bg-slate-200 active:scale-95">
@@ -63,7 +65,7 @@
                     </div>
                     <transition name="slide-bottom">
                         <div v-show="note.expandNote" class="relative">
-                            <p :class="{'line-through': note.checked}" class="p-2">{{note.text}}</p>
+                            <p :class="{'line-through': note.checked}" class="p-2 break-words">{{note.text}}</p>
                             <span class="text-sm italic absolute bottom-0 right-0">For: {{
                             getFullDate(note.deadline.toDate())}}</span>
                         </div>
@@ -88,14 +90,13 @@ const showNoteCreate = ref(false)
 const showNote = ref(false)
 const docRef = collection(db, "Users", store.state.user.uid, "Notes")
 const errorMsg = ref(null)
-
 const getFullDate = (dateobj) => {
     var dd = String(dateobj.getDate()).padStart(2, '0');
     var mm = String(dateobj.getMonth() + 1).padStart(2, '0'); //January is 0!
     var yyyy = dateobj.getFullYear();
     var hh = dateobj.getHours()
     var m = dateobj.getMinutes()
-
+    
     return dateobj = mm + '/' + dd + '/' + yyyy + ' ' + hh + ':' + m
 }
 const addNote = async () => {
@@ -110,7 +111,7 @@ const addNote = async () => {
         }).then(() => {
             showNote.value = false
             showDatePicker.value =
-                note.value = {
+            note.value = {
                     title: '',
                     text: '',
                     deadline: null,
@@ -150,6 +151,7 @@ const getNotes = () => {
             }
         })
         notes.value = arr
+        console.log(notes.value.sort((a, b) => b.deadline - a.deadline));
     })
 }
 getNotes()

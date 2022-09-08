@@ -1,7 +1,7 @@
 <template>
     <div class="w-full h-full ">
         <form @submit.prevent="createQuiz()" class="max-w-6xl mx-auto">
-            <div class=" p-10 bg-slate-100 flex flex-col gap-4 items-center rounded-t-3xl">
+            <div class="p-10 bg-slate-100 flex flex-col gap-4 items-center rounded-t-3xl">
                 <div class="flex  items-center">
                     <label for="title" class="text-slate-700 font-semibold text-3xl">Quiz Title:</label>
                     <input type="text" name="title" id="title" class="p-3 ml-4 rounded-full text-center text-xl"
@@ -141,7 +141,7 @@
                         class="w-[70px] h-[70px] flex-shrink-0 self-center  bg-white rounded-full relative shadow-md hover:bg-gray-50 active:scale-95">
                         <span
                             class="material-symbols-outlined absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 active:shadow-none">
-                            assignment_add
+                            docs_add_on
                         </span>
                     </button>
                 </div>

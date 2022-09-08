@@ -1,25 +1,25 @@
 <template>
-    <div class="flex gap-5 bg-slate-100 p-10 rounded-3xl max-w-7xl mx-auto my-10">
-        <div class="min-w-[250px]">
-            <h1 class="text-6xl font-bold text-slate-700 ">Courses</h1>
+    <div class="flex flex-col lg:flex-row gap-5 bg-slate-100 p-5 lg:p-10 md:rounded-3xl max-w-7xl lg:mx-auto my-10 w-screen md:w-full">
+        <div class="lg:min-w-[250px]">
+            <h1 class=" text-2xl lg:text-6xl font-bold text-slate-700 ">Courses</h1>
             <span class="font-bold text-slate-700 ">Courses created</span>
         </div>
         <button @click="router.push('/create-course')"
-            class="w-[100px] h-[100px] flex-shrink-0 self-center  bg-white rounded-full relative shadow-md hover:bg-gray-50 active:scale-95">
+            class="w-[50px] h-[50px] lg:w-[100px] lg:h-[100px] flex-shrink-0 self-center  bg-white rounded-full relative shadow-md hover:bg-gray-50 active:scale-95">
             <span class="material-symbols-outlined absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 ">
                 add
             </span>
         </button>
-        <div class="flex w-full  overflow-hidden  overflow-x-scroll  gap-4 bg-white p-5 rounded-3xl snap-x text-slate-700"
+        <div class="flex flex-wrap w-full  overflow-hidden  overflow-x-scroll  gap-4 bg-white p-5 rounded-3xl snap-x text-slate-700"
             id="container">
             <transition-group name="slide-fade">
-                <div class="basis-[200px] min-h-[200px] bg-gray-100 rounded-3xl p-5 pb-6 flex flex-col items-center justify-between relative flex-shrink-0 snap-center"
+                <div class="lg:basis-[200px] lg:min-h-[200px] bg-gray-100 rounded-3xl p-5 pb-6 flex flex-col items-center justify-between relative flex-shrink-0 snap-center"
                     id="quiz" v-for="(course, index) in courseData" :key="index">
                     <div class="self-start flex flex-col ">
-                        <span class="text-3xl font-semibold">{{ course.title }}</span>
+                        <span class="lg:text-3xl font-semibold">{{ course.title }}</span>
                     </div>
                     <div class="flex flex-col ">
-                        <span class="text-xl font-semibold">Course code: {{ course.code }}</span>
+                        <span class="lg:text-xl font-semibold">Course code: {{ course.code }}</span>
                     </div>
                     <div class="flex items-center gap-3">
                         <button @click="goToCourse(course.title, course.id)"

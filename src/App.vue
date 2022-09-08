@@ -1,9 +1,9 @@
 <template>
-  <div class="grid grid-cols-2 transition-all duration-300 relative  ">
+  <div class="grid grid-cols-2 transition-all duration-300 relative ">
     <navBar class="col-span-2" />
     <div class="col-span-2 flex min-h-screen">
       <SideNav v-if="store.state.user"></SideNav>
-      <div class="p-10 basis-full">
+      <div class="lg:p-10 basis-full">
         <router-view v-slot="{ Component }">
           <transition name="fade" mode="out-in">
             <component :is="Component" :key="$route.path" />

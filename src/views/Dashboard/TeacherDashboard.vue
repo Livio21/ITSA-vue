@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div class="flex items-center max-w-6xl mx-auto">
-      <span class="text-4xl text-slate-700 font-bold basis-full">{{ greet }}
+    <div class="flex flex-col lg:flex-row items-center max-w-6xl lg:mx-auto w-screen">
+      <span class="lg:text-4xl text-slate-700 font-bold basis-full">{{ greet }}
         {{ store.state.user.displayName.split(" ")[0]}}</span>
       <ClockComponent />
     </div>
-    <div class=" rounded-3xl p-2 mt-10">
+    <div class=" rounded-3xl lg:p-2 mt-10">
       <ToDoComponent></ToDoComponent>
       <CourseContainer />
       <QuizContainer />

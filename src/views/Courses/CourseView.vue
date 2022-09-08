@@ -1,10 +1,9 @@
 <template>
   <div
-    class="flex flex-col min-h-screen max-w-[1360px] basis-full mx-auto ring ring-slate-100 ring-3 rounded-3xl bg-gray-50 text-slate-700 overflow-hidden">
-    <div
-      class="flex justify-center items-end bg-slate-500 h-[200px] w-full  rounded-tr-3xl rounded-tl-3xl shadow-inner p-3 bg-cover  relative"
+    class="flex flex-col md:max-w-[1360px] basis-full mx-auto ring ring-slate-100 ring-3 md:rounded-3xl bg-gray-50 text-slate-700 overflow-hidden">
+    <div class="flex justify-center items-end bg-slate-500 md:h-[200px] w-full shadow-inner p-3 bg-cover  relative"
       id="b">
-      <span class=" text-6xl  font-semibold " id="title">{{ course.title }}</span>
+      <span class=" text-2xl md:text-6xl  font-semibold " id="title">{{ course.title }}</span>
       <div v-if="store.state.user.uid == course.uid" class="absolute top-3 right-3">
         <button @click="more = !more" :class="{'rounded-b-none bg-gray-100': more}"
           class="material-symbols-outlined rounded-full hover:bg-gray-100 w-[35px] h-[35px] transition-all">more_horiz</button>
@@ -19,17 +18,18 @@
     </div>
     <div class="border-b-2 mt-5">
       <nav class="self-center text-slate-700 ">
-        <ul class="flex text-xl text-slate-700 font-semibold justify-center divide-x-2 divide-slate-100">
+        <ul class="flex md:text-xl text-slate-700 font-semibold justify-center divide-x-2 divide-slate-100">
           <li :class="{'bg-gray-100':show =='posts'}"
-            class=" active:bg-gray-300 hover:bg-gray-200 p-5 rounded-tl-lg cursor-pointer" @click="show = 'posts'">
+            class=" active:bg-gray-300 hover:bg-gray-200 p-2 md:p-5 rounded-tl-lg cursor-pointer"
+            @click="show = 'posts'">
             <a>Posts</a>
           </li>
           <li :class="{'bg-gray-100':show =='materials'}"
-            class=" active:bg-gray-300 hover:bg-gray-200 p-5 cursor-pointer" @click="show = 'materials'; ">
+            class=" active:bg-gray-300 hover:bg-gray-200 p-2 md:p-5 cursor-pointer" @click="show = 'materials'; ">
             <a>Resources</a>
           </li>
           <li :class="{'bg-gray-100':show =='about'}"
-            class=" active:bg-gray-300 hover:bg-gray-200 p-5 rounded-tr-lg cursor-pointer"
+            class=" active:bg-gray-300 hover:bg-gray-200 p-2 md:p-5 rounded-tr-lg cursor-pointer"
             @click="show = 'about'; getCreatorsData()">
             <a>About</a>
           </li>
@@ -37,33 +37,33 @@
       </nav>
     </div>
 
-    <div class="p-10 w-full h-full flex flex-col justify-center items-center bg-gray-100">
+    <div class=" md:p-10 w-full h-full flex flex-col justify-center items-center bg-gray-100">
       <transition name="fade-fast">
         <div class="w-full flex flex-col items-center divide-y-2" v-if="show == 'posts'">
           <div class="flex flex-col min-w-full p-3 justify-center items-center gap-3" v-click-outside="clickOutside">
             <div class="flex gap-3 overflow-hidden p-1 self-center">
               <div class="flex flex-col items-center gap-3 transition-all">
                 <input type="text" placeholder="Hello..."
-                  class="p-3 h-[50px] w-[500px] font-bold rounded-full text-center text-xl" @focusin="expand = true"
-                  v-model="coursePost.title">
+                  class="p-3 md:h-[50px] md:w-[500px] font-bold rounded-full text-center md:text-xl"
+                  @focusin="expand = true" v-model="coursePost.title">
                 <transition name="fade-fast">
-                  <div class="flex gap-5" v-show="expand">
+                  <div class="flex flex-col md:flex-row gap-5" v-show="expand">
                     <div class="relative">
                       <textarea name="" id="" @dragenter.prevent="toggleActive" @dragleave.prevent="toggleActive"
                         @dragover.prevent @drop="toggleActive(); expand = true;" @drop.prevent="drop"
                         @change="selectedFile()" :class="{ 'bg-blue-200 animate-pulse backdrop-blur-3xl': active}"
-                        class="rounded-3xl p-3 resize-none shadow-inner focus:outline-slate-200 transition-all w-[700px] h-[200px] duration-200 text-lg"
+                        class="rounded-3xl p-3 resize-none shadow-inner focus:outline-slate-200 transition-all w-[300px] md:w-[700px] md:h-[200px] duration-200 md:text-lg"
                         placeholder="Text" v-model="coursePost.text" @focusin="expand = true"
                         title="Drag files."></textarea>
                       <label for="dropzoneFile"
-                        class="material-symbols-outlined absolute bottom-4  right-3 z-10 bg-blue-500 rounded-3xl cursor-pointer text-white hover:scale-105"
+                        class="hidden md:block material-symbols-outlined absolute bottom-4  right-3 z-10 bg-blue-500 rounded-3xl cursor-pointer text-white hover:scale-105"
                         title="Add files">add</label>
                       <input type="file" id="dropzoneFile"
                         accept="image/*,.pdf,.doc,.docx,.xml,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                         class="dropzoneFile hidden">
                     </div>
                     <button @click="createPost(); expand = false" @focus="expand = true"
-                      class=" self-center bg-blue-500 text-white p-3 h-[60px] w-[150px] rounded-full text-xl hover:bg-blue-600 active:bg-blue-500 active:scale-95">Post</button>
+                      class=" self-center bg-blue-500 text-white p-3 md:h-[60px] w-[150px] rounded-full md:text-xl hover:bg-blue-600 active:bg-blue-500 active:scale-95">Post</button>
                   </div>
                 </transition>
               </div>
@@ -91,7 +91,7 @@
           <div class="w-full flex flex-col items-center">
             <transition-group name="post">
               <div id="timeline" v-for="post in postData" :key="post.id"
-                class=" drop-shadow-md p-5 rounded-3xl my-10 w-full max-w-3xl bg-white relative">
+                class=" drop-shadow-md p-2 md:p-5 md:rounded-3xl my-10 w-full max-w-3xl bg-white relative">
                 <div v-if="store.state.user.uid == post.uid || store.state.user.uid == course.uid"
                   class="absolute top-3 right-3">
                   <button @click="post.more = !post.more" :class="{'rounded-b-none bg-gray-100': post.more}"
@@ -105,17 +105,17 @@
                   </transition>
                 </div>
                 <div class="flex flex-col  w-full p-3">
-                  <span class="self-center text-3xl font-semibold">{{ post.title }}</span>
+                  <span class="self-center text-lg md:text-3xl font-semibold">{{ post.title }}</span>
                   <div class="flex w-fit items-center gap-3  ">
                     <img :src="post.photo" alt="" width="50" height="50" class="rounded-full">
                     <div class="flex flex-col">
-                      <span class="text-slate-900">{{ post.name }}</span>
-                      <span class="text-slate-700 italic text-xs">{{ post.role }}</span>
-                      <span class="text-slate-400 text-xs">{{ post.date }}</span>
+                      <span class="text-slate-900 text-sm">{{ post.name }}</span>
+                      <span class="text-slate-700 italic text-xs hidden md:block">{{ post.role }}</span>
+                      <span class="text-slate-400 text-xs hidden md:block">{{ post.date }}</span>
                     </div>
                   </div>
                 </div>
-                <div class="p-4" v-html="replaceURLs(post.text)">
+                <div class=" p-2 md:p-4" v-html="replaceURLs(post.text)">
                 </div>
                 <div
                   class="self-center w-full flex gap-3 h-fit max-h-[200px] flex-nowrap overflow-x-auto overflow-y-hidden p-4"
@@ -162,7 +162,7 @@
                 <span>{{ course.creator.email }}</span>
               </div>
             </div>
-            <div class="w-1/2 p-5 bg-white rounded-3xl ">
+            <div class="md:w-1/2 p-5 bg-white md:rounded-3xl ">
               <p class="text-slate-700 break-words">{{ course.about }}</p>
             </div>
             <div>
@@ -231,10 +231,10 @@
     <transition name="fade">
       <div v-if="showEmbed"
         class="fixed top-0 bottom-0 left-0 right-0 z-50 w-full h-full backdrop-blur backdrop-brightness-75">
-        <button @click="showFunc"
-          class="material-symbols-outlined bg-gray-500 rounded-full p-1 m-10 absolute top-2 right-2">
+        <button @click="showEmbed = false"
+          class="material-symbols-outlined bg-gray-500 rounded-full p-1 m-10 absolute top-0 right-0 md:top-2 md:right-2">
           close </button>
-        <iframe :src="url" frameborder='0' class="w-1/2 h-full mx-auto text-center bg-black/25 "
+        <iframe :src="url" frameborder='0' class="md:w-1/2 w-full  h-full mx-auto text-center bg-black/25"
           v-click-outside="showFunc">
         </iframe>
       </div>
@@ -551,6 +551,11 @@ export default {
   }
 }
 
+iframe{
+  flex: auto;
+  justify-content: center;
+  align-items: center;
+}
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease-in;

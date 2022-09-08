@@ -1,9 +1,9 @@
 <template>
-  <div class="about w-full h-full relative">
-    <div class="max-w-6xl mx-auto grid justify-center">
+  <div class="about w-full h-full relative p-3 ">
+    <div class="md:max-w-6xl mx-auto grid justify-center">
       <div class="font-semibold text-slate-700 w-fit">
-        <h1 class="text-6xl ">ITSA System</h1>
-        <h2 class="test text-2xl ">Interactive Teaching and Student Assesment System</h2>
+        <h1 class="text-3xl md:text-6xl ">ITSA System</h1>
+        <h2 class=" md:text-2xl ">Interactive Teaching and Student Assesment System</h2>
       </div><br>
       <div class=" font-semibold text-slate-700">
         <h2>Created by <a target="_blank" href="https://github.com/Livio21"

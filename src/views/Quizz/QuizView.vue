@@ -99,7 +99,7 @@ onBeforeMount(() => {
     getDoc(doc(db, "Users", store.state.user.uid, "RegisteredQuizzes", props.quizId)).then((doc) => {
         if (doc.data().completed) {
             alert('Already done this quiz!')
-            router.push('/my-dashboard')
+            router.push('/student-dashboard')
         } else {
             getQuizData()
         }

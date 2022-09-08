@@ -1,17 +1,18 @@
 <template>
-    <div class="flex gap-5 bg-slate-100 p-10 rounded-3xl max-w-7xl mx-auto my-10">
+    <div
+        class="flex flex-col lg:flex-row gap-5 bg-slate-100 p-5 lg:p-10 rounded-3xl max-w-7xl lg:mx-auto my-10 w-screen">
         <div class="min-w-[250px]">
-            <h1 class="text-6xl font-bold text-slate-700">Quizzes</h1>
+            <h1 class="text-2xl lg:text-6xl font-bold text-slate-700">Quizzes</h1>
             <span class="font-bold text-slate-700">Previous Quizzes done</span>
         </div>
         <button @click="showAddQuizModal"
-            class="w-[100px] h-[100px] flex-shrink-0 self-center  bg-white rounded-full relative shadow-md hover:bg-gray-50 active:scale-95">
+            class="w-[50px] h-[50px] lg:w-[100px] lg:h-[100px] lg:flex-shrink-0 self-center  bg-white rounded-full relative shadow-md hover:bg-gray-50 active:scale-95">
             <span class="material-symbols-outlined absolute top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 ">
                 add
             </span>
         </button>
         <div class=" w-full overflow-hidden  overflow-x-scroll   bg-white p-5 rounded-3xl snap-x" id="container">
-            <div v-if="quizzesData" class="flex flex-wrap gap-5">
+            <div v-if="quizzesData" class="flex flex-col lg:flex-row flex-wrap gap-5">
                 <transition-group name="slide-fade">
                     <div class=" min-h-[200px] bg-gray-100 rounded-3xl p-5 pb-6 flex flex-col items-center justify-between relative flex-shrink-0 snap-center"
                         id="quiz" v-for="(quiz, index) in quizzesData" :key="index">
@@ -20,7 +21,7 @@
                             <span>{{ quiz.quizSubject }}</span>
                             <span>For: {{ quiz.quizCourse.title }}</span>
                             <span>Created by: {{ quiz.creator.name }}</span>
-    
+
                         </div>
                         <div class="flex flex-col text-slate-700">
                             <span>Score {{ quiz.score + "/" + quiz.maxscore }}</span>
@@ -31,16 +32,17 @@
                             }}</span>
                             <span v-if="!quiz.completed"
                                 :class="quiz.timelimit.toDate() <= new Date() ? 'text-red-500' : 'text-green-500'">{{
-                                                            quiz.timelimit.toDate() <= new Date() ? 'Quiz ended on ' +
+                                                                quiz.timelimit.toDate() <= new Date() ? 'Quiz ended on ' +
                                 getFullDate(quiz.timelimit.toDate()) : 'Quiz available till ' +
                                 getFullDate(quiz.timelimit.toDate()) }}</span>
-    
+
                         </div>
                         <div v-if="!quiz.completed" class="flex items-center gap-3">
                             <button @click="openOldQuiz(quiz.code, quiz.id)"
                                 class="text-slate-700 font-semibold italic text-lg">View
                                 Quiz</button>
-                            <span class="material-symbols-outlined" style="font-size: 25px; color: gray;font-weight: 600;">
+                            <span class="material-symbols-outlined"
+                                style="font-size: 25px; color: gray;font-weight: 600;">
                                 open_in_new
                             </span>
                         </div>
@@ -56,7 +58,7 @@
         <transition name="fade">
             <div v-if="addQuiz" class="fixed top-0 left-0 w-full h-full z-50 backdrop-blur backdrop-brightness-75 ">
                 <div v-click-outside="showAddQuizModal"
-                    class="flex flex-col gap-4 justify-center items-center w-[400px] h-[400px] bg-slate-100 rounded-3xl p-10  absolute  top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 ring ring-slate-100">
+                    class="flex flex-col gap-4 justify-center items-center lg:w-[400px] lg:h-[400px] bg-slate-100 rounded-3xl p-10  absolute  top-1/2 right-1/2 translate-x-1/2 -translate-y-1/2 ring ring-slate-100">
                     <h1 class="text-5xl font-bold  content-start text-slate-700">Quiz</h1>
                     <span class="text-slate-700 text-sm">Enter quiz code provided:</span>
                     <span v-if="errorDisplay" class="text-red-500 italic text-sm animate-pulse">{{ errorDisplay
@@ -195,6 +197,7 @@ getQuizzes()
 .fade-leave-to {
     opacity: 0;
 }
+
 .slide-fade-enter-active {
     transition: all 0.3s ease-in-out;
 }
@@ -208,6 +211,7 @@ getQuizzes()
     transform: translateX(-20px);
     opacity: 0;
 }
+
 #container::-webkit-scrollbar {
     width: 0.6vw;
     border-bottom: 5px solid rgba(255, 255, 255, 0);
