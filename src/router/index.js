@@ -135,6 +135,10 @@ router.beforeEach((to, from, next) => {
     router.push(store.state.user.role == 'Student' ? '/student-dashboard':'/teacher-dashboard');
     return;
   }
+   if (to.path === "/" && !auth.currentUser) {
+    router.push('/login');
+    return;
+  }
   if (
     to.matched.some((record) => record.meta.requiresAuth) &&
     !auth.currentUser
@@ -142,6 +146,7 @@ router.beforeEach((to, from, next) => {
     next("/login");
     return;
   }
+  
   if (
     to.matched.some((record) => record.meta.requiresVer) &&
     to.matched.some((record) => record.meta.requiresAuth) &&
@@ -157,6 +162,7 @@ router.beforeEach((to, from, next) => {
     next("/my-profile");
     return;
   }
+ 
 
   next();
 });
