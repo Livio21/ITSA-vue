@@ -162,8 +162,10 @@ router.beforeEach((to, from, next) => {
     next("/my-profile");
     return;
   }
- 
-
+  if(auth.currentUser && !store.state.user.role){
+    next('/register')
+    return;
+  }
   next();
 });
 export default router;
