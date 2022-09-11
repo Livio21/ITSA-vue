@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="flex flex-col lg:flex-row items-center lg:max-w-6xl lg:mx-auto w-screen">
+    <div class="flex flex-col lg:flex-row items-center lg:max-w-6xl lg:mx-auto">
       <span class="lg:text-4xl text-slate-700 font-bold basis-full">{{ greet }}
         {{ store.state.user.displayName.split(" ")[0]}}</span>
       <ClockComponent />

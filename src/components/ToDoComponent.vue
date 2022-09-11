@@ -1,6 +1,6 @@
 <template>
     <div
-        class="max-w-7xl w-screen bg-slate-100 lg:rounded-3xl lg:mx-auto py-4 lg:p-10 flex flex-wrap gap-4 justify-center lg:justify-start">
+        class="max-w-7xl bg-slate-100 lg:rounded-3xl lg:mx-auto py-4 lg:p-10 flex flex-wrap gap-4 justify-center lg:justify-start">
         <div class=" max-w-7xl bg-slate-100 rounded-3xl  flex flex-col lg:flex-row items-center   gap-4 ">
             <div class="w-[250px]">
                 <span class="text-2xl md:text-6xl text-slate-700 font-semibold">Notes</span><br>
@@ -96,7 +96,7 @@ const getFullDate = (dateobj) => {
     var yyyy = dateobj.getFullYear();
     var hh = dateobj.getHours()
     var m = dateobj.getMinutes()
-    
+
     return dateobj = mm + '/' + dd + '/' + yyyy + ' ' + hh + ':' + m
 }
 const addNote = async () => {
@@ -111,7 +111,7 @@ const addNote = async () => {
         }).then(() => {
             showNote.value = false
             showDatePicker.value =
-            note.value = {
+                note.value = {
                     title: '',
                     text: '',
                     deadline: null,
