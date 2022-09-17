@@ -26,7 +26,7 @@
             <div v-for="(afile, index) in arr1" :key="index" class="md:min-w-[300px]">
                 <div v-if="afile.fileName"
                     class="ring-2 bg-white ring-slate-200 p-3 max-w-fit max-h-fit rounded flex flex-col items-center align-middle relative ">
-                    <button @click="showFunc(afile.fileUrl, afile.fileName)"
+                    <button @click="showFunc(afile.fileUrl)"
                         class="material-symbols-outlined absolute right-1 top-1 active:scale-95">
                         zoom_out_map </button>
 
@@ -48,51 +48,28 @@
     <transition name="v">
         <div v-if="show "
             class="fixed top-0 bottom-0 left-0 right-0 z-50 w-full h-full backdrop-blur backdrop-brightness-75">
-            <button @click="show = false"
+            <button  @click="showFunc"
                 class="material-symbols-outlined bg-gray-500 rounded-full p-1 m-10 absolute top-2 right-2 z-20">
                 close </button>
-            <iframe :src="file.url" frameborder='0'
-                class="w-full z-10 md:w-1/2 h-full mx-auto text-center bg-black/25 " v-click-outside="showFunc"
-                align="center">
+            <iframe :src="url" frameborder='0' class="w-full z-10 md:w-1/2 h-full mx-auto text-center bg-black/25 "
+                v-click-outside="showFunc" align="center">
             </iframe>
-            <!-- <div v-if="imgFormats.includes(file.fileName.split('.')[1])">
-                <img :src="file.url" alt="">
-            </div>
-            <div v-else>
-                <iframe :src="file.url" type="" class="" width="px" scrolling="no"></iframe>
-            </div> -->
         </div>
     </transition>
 </template>
-
 <script >
 import { ref } from 'vue';
-
-
-
-
-
 export default {
     props: ["materials", "posts"],
     setup(props) {
         const show = ref(false)
-        const imgFormats = [
-            'jpeg',
-            'gif',
-            'png',
-            'apng',
-            'svg',
-            'bmp'
-        ]
-        const file = ref({})
-        const showFunc = (u, n) => {
+        const url = ref('')
+        const showFunc = (u) => {
             show.value = !show.value
-            file.value.url = u
-            file.value.fileName = n
+            url.value = u
         }
         const arr = ref([])
         const arr1 = ref([])
-
         const postDataFunc = () => {
             console.log(props.posts);
             if (props.posts) {
@@ -108,12 +85,11 @@ export default {
                 })
             }
         }
-
         console.log(arr.value, arr1.value);
         postDataFunc()
         console.log(props.posts);
         return {
-            showFunc, arr, arr1, imgFormats, file
+            show, showFunc, postDataFunc, arr, arr1, url
         }
     }
 }

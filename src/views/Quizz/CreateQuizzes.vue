@@ -48,10 +48,10 @@
                         class="ml-5 bg-green-600 px-3 py-2 rounded-full text-white font-semibold hover:bg-green-500 active:scale-95 active:bg-green-700">Random</button>
                 </div>
                 <div class="  items-center gap-3">
-                    <span class="text-slate-700 font-semibold text-lg ">Time limit: </span>
+                    <span class="text-slate-700 font-semibold text-lg ">Deadline: </span>
                     <div id="timer" class="flex gap-3">
                         <div>
-                            <label for="timelimit" class="mr-2 text-slate-700 text-sm font-semibold">Timelimit:</label>
+                            <label for="timelimit" class="mr-2 text-slate-700 text-sm font-semibold">Deadline:</label>
                             <input type="datetime-local" name="" id="timelimit" class="focus:outline-none p-1 rounded"
                                 v-model="timelimit">
                         </div>
@@ -300,12 +300,33 @@ const createQuiz = () => {
         timelimit: new Date(timelimit.value)
 
     }
-
+    const getFullDate = (dateobj) => {
+        var dd = String(dateobj.getDate()).padStart(2, '0');
+        var mm = String(dateobj.getMonth() + 1).padStart(2, '0'); //January is 0!
+        var yyyy = dateobj.getFullYear();
+        var h = String(dateobj.getHours()).padStart(2, '0');
+        var m = String(dateobj.getMinutes()).padStart(2, '0');
+        return dateobj = mm + '/' + dd + '/' + yyyy + ' ' + h + ':' + m
+    }
     const docRef = collection(db, "Quizzes")
     addDoc(docRef, quiz.value).then((r) => {
-        router.push('/teacher-dashboard')
-        clearAllFields()
         console.log(r);
+        let obj = {
+            date: new Date(),
+            uid: store.state.user.uid,
+            name: store.state.user.displayName,
+            email: store.state.user.email,
+            photo: store.state.user.photoURL,
+            role: store.state.user.role,
+            files: null,
+            text: 'Quiz Code: ' + quizCode.value + '<br/>' + 'Deadline: ' + getFullDate(new Date(timelimit.value)) + '<br/>' + 'Topic: ' + quizSubject.value,
+            title: 'New Quiz: ' + quizTitle.value
+        }
+        const postRef = collection(db, 'Courses', course.value.id, 'Course-Posts')
+        addDoc(postRef, obj).then(() => {
+            router.push('/teacher-dashboard')
+            clearAllFields()
+        })
     }).catch((err) => {
         console.log(err);
     })
