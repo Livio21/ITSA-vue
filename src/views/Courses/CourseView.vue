@@ -124,10 +124,11 @@
                     <div
                       class="ring-2 bg-white ring-slate-200 px-2 py-1 rounded flex items-center align-middle divide-x-2">
                       <div class=" max-w-[200px] max-h-[100px] flex items-center  divide-x-2">
+                        <span class="text-slate-700 font-semibold px-2 overflow-hidden overflow-ellipsis">{{
+                        file.fileName
+                        }}</span>
                         <a :href="file.fileUrl" target="_blank"
-                          class="text-slate-700 font-semibold px-2 overflow-hidden">{{
-                          file.fileName
-                          }}</a>
+                          class="material-symbols-outlined active:scale-95 p-2">download</a>
                         <button @click="showFunc(file.fileUrl)" class="material-symbols-outlined active:scale-95 p-2">
                           open_in_full </button>
                       </div>
@@ -271,6 +272,7 @@ export default {
     const showEmbed = ref(false)
     const students = ref([{}])
     const search = ref('')
+    const fileExtension = ref()
     const clickOutside = () => {
       expand.value = false
     }
@@ -351,13 +353,20 @@ export default {
         location.reload();
       });
     };
+    const fileExtensionFunc = (name) => {
+      let patternFileExtension = /(\.\w+$)/igm;
+      fileExtension.value = (name).match(patternFileExtension);
+      console.log(fileExtension.value);
+    }
     const dropzoneFile = ref({})
     const drop = (e) => {
       dropzoneFile.value = e.dataTransfer.files[0]
+      fileExtensionFunc(dropzoneFile.value.name)
       handleFileUpload()
     }
     const selectedFile = () => {
       dropzoneFile.value = document.querySelector(".dropzoneFile").files[0]
+      fileExtensionFunc(dropzoneFile.value.name)
       handleFileUpload()
     }
 
@@ -395,7 +404,8 @@ export default {
               console.log('File available at', downloadURL);
               let obj = {
                 fileUrl: downloadURL,
-                fileName: dropzoneFile.value.name
+                fileName: dropzoneFile.value.name,
+                fileType: fileExtension.value[0]
               }
               uploadedFiles.value.push(obj)
               coursePost.value.files = uploadedFiles.value
@@ -522,7 +532,7 @@ export default {
       course, removeCourse, show, drop, selectedFile, handleFileUpload, coursePost, createPost,
       toggleActive, active, uploadedFiles, deletePost, removeFile, isUploaded, clearFields, getPostData, getCourseData, postData,
       expand, getFullDate, getCreatorsData, showFunc, showEmbed, url, store, getUsers, students, search, filteredItems, clickOutside,
-      more, replaceURLs
+      more, replaceURLs, fileExtensionFunc
     };
   },
 };
@@ -551,11 +561,12 @@ export default {
   }
 }
 
-iframe{
+iframe {
   flex: auto;
   justify-content: center;
   align-items: center;
 }
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.5s ease-in;

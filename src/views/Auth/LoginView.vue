@@ -1,5 +1,4 @@
 <template>
-
     <div class="container mx-auto">
         <div class="flex justify-center my-12">
             <div class="w-full xl:w-3/4 lg:w-11/12 flex">
