@@ -46,6 +46,9 @@ export default {
           loaded.value = true;
         }
       }
+      window.addEventListener("beforeunload", () => {
+        store.dispatch("logout");
+      });
     })
     return {
       store, loaded
