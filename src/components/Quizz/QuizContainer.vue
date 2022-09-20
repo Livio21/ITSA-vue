@@ -12,7 +12,7 @@
             </span>
         </button>
         <div class=" w-full overflow-hidden  overflow-x-scroll   bg-white p-5 rounded-3xl snap-x" id="container">
-            <div v-if="quizzesData" class="flex flex-col lg:flex-row flex-wrap gap-5">
+            <div v-if="quizzesData" class="flex flex-col lg:flex-row flex-wrap lg:flex-nowrap gap-5">
                 <transition-group name="slide-fade">
                     <div class=" min-h-[200px] bg-gray-100 rounded-3xl p-5 pb-6 flex flex-col items-center justify-between relative flex-shrink-0 snap-center"
                         id="quiz" v-for="(quiz, index) in quizzesData" :key="index">
