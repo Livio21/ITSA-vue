@@ -26,7 +26,7 @@
       </div>
       <div class="flex flex-col items-center gap-5 p-10 w-full">
         <div class="flex flex-col">
-          <label for="description" class="mb-3 font-semibold  text-slate-700">About:</label>
+          <label for="description" class="mb-3 font-semibold self-start  text-slate-700">About:</label>
           <span class="italic text-slate-500 text-xs">Course description.</span>
           <textarea name="description" id="" cols="70" rows="6" class="p-3 shadow-inner rounded-3xl resize-none"
             v-model="newCourse.about"></textarea>

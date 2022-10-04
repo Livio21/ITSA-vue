@@ -1,7 +1,7 @@
 <template>
-  <div v-if="store.state.user"  class=" min-h-full  md:h-screen bg-gray-100">
+  <div v-if="store.state.user" class=" min-h-full  md:h-screen bg-gray-100">
     <transition v-show="showNav" name="slide-fade">
-      <div v-show="showNav" class="fixed z-10 top-0 bg-gray-100 pt-14">
+      <div v-show="showNav" class="fixed z-10 top-0 bg-gray-100 pt-14 " style="min-height: inherit;">
         <div class="flex flex-col justify-center  rounded-br-lg  p-2 w-72  divide-y-2 text-center z-0">
           <div class="mainNavigation flex flex-col  text-base font-medium gap-3 p-2">
             <span class="text-xl text-slate-400">Introduction</span>

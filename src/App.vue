@@ -15,7 +15,7 @@
   <FooterComponent></FooterComponent>
 </template>
 <script>
-import { onBeforeMount, onMounted, ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import navBar from "@/components/Navigation/navBar.vue";
 import PulseLoader from 'vue-spinner/src/PulseLoader.vue'
 import FooterComponent from "@/components/footerComponent.vue";
@@ -40,15 +40,15 @@ export default {
 
 
 
-    onMounted(() => {
+    onBeforeMount(() => {
       document.onreadystatechange = () => {
         if (document.readyState == "complete") {
           loaded.value = true;
         }
       }
-      window.addEventListener("beforeunload", () => {
-        store.dispatch("logout");
-      });
+      // window.addEventListener("beforeunload", () => {
+      //   store.dispatch("logout");
+      // });
     })
     return {
       store, loaded
