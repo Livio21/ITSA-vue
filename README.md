@@ -1,4 +1,4 @@
-# itsa-vue
+ITSA or Interactive Teaching and Assesment System is a Learning/Student Management System created on VueJS 3 & Firebase and Tailwind CSS for styling
 
 ## Project setup
 ```
