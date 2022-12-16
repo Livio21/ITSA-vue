@@ -166,7 +166,7 @@ router.beforeEach((to, from, next) => {
     next("/my-profile");
     return;
   }
-  if(auth.currentUser && !store.state.user.role){
+  if(!auth.currentUser && !store.state.user.role){
     next('/register')
     return;
   }
