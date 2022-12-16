@@ -127,6 +127,10 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
+    if (auth.currentUser && !store.state.user.role) {
+    next("/register");
+    return;
+  }
   if (to.path === "/login" && auth.currentUser) {
     router.push(store.state.user.role == 'Student' ? '/student-dashboard':'/teacher-dashboard');
     return;
