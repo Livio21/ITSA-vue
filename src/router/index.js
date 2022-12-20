@@ -162,5 +162,6 @@ router.beforeEach((to, from, next) => {
     next("/my-profile");
     return;
   }
+  next()
 });
 export default router;
