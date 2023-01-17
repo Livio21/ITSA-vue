@@ -127,7 +127,7 @@ const router = createRouter({
   routes,
 });
 router.beforeEach((to, from, next) => {
-    if (auth.currentUser && !store.state.user) {
+    if (!auth.currentUser && !store.state.user) {
     next("/register");
     return;
   }
