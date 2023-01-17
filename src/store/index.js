@@ -275,7 +275,7 @@ export default createStore({
     },
 
     fetchUser({ commit }) {
-      await auth.onAuthStateChanged(async (user) => {
+       auth.onAuthStateChanged((user) => {
         if (user === null) {
           commit("CLEAR_USER");
         } else {
