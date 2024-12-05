@@ -16,7 +16,6 @@
     "firebase": "^9.9.2",
     "material-symbols": "^0.2.7",
     "one-colorpicker": "^1.0.12",
-    "register-service-worker": "^1.7.2",
     "v-viewer": "^3.0.10",
     "vue": "^3.2.13",
     "vue-click-outside": "^1.1.0",
